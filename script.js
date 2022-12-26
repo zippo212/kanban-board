@@ -7,6 +7,7 @@ let appData = {
                 {
                     title: 'Todo',
                     id: 'c1',
+                    color: '#FFB6C1',
                     cards: [
                         {
                             title: 'first',
@@ -25,6 +26,7 @@ let appData = {
                 {
                     title: 'Doing',
                     id: 'c2',
+                    color: '#F9EBEA',
                     cards: [
                         {
                             title: 'first second col',
@@ -54,6 +56,7 @@ let appData = {
                 {
                     title: 'Todo2',
                     id: 'c5',
+                    color: '#FCE5CD',
                     cards: [
                         {
                             title: 'first',
@@ -72,6 +75,7 @@ let appData = {
                 {
                     title: 'Doing2',
                     id: 'c6',
+                    color: '#D9EAD3',
                     cards: [
                         {
                             title: 'first second col board2',
@@ -142,7 +146,7 @@ const fillData = (data) => {
         columnTitle.classList.add('uppercase', 'flex', 'items-center')
         // create title content *Fix dot color later and number in ()* 
         let columnTitleDot = document.createElement('span')
-        columnTitleDot.classList.add('h-3', 'w-3', 'block', 'bg-teal-300', 'rounded-full', 'mr-3')
+        columnTitleDot.classList.add('h-3', 'w-3', 'block', `bg-[${column.color}]`, 'rounded-full', 'mr-3')
         let columnTitleSpan = document.createElement('span')
         columnTitleSpan.classList.add('block')
         columnTitleSpan.textContent = column.title + ' ' + '(4)'
@@ -194,3 +198,78 @@ const generateId = (type) => {
     localStorage.setItem('app_data', JSON.stringify(appData))
     return `${type}-${nextId++}`;
 }
+
+const addNewTaskContainer = document.querySelector('#add-task-container')
+const addNewTaskBackground = document.querySelector('#add-task-background')
+const addNewTaskBtn = document.querySelector('#new-task-btn')
+const statusSelect = document.querySelector('#status') 
+
+const showAddNewTask = () => {
+    addNewTaskBackground.removeAttribute('hidden')
+    addNewTaskContainer.removeAttribute('hidden')
+    board = getBoard(appData.currentBoard)
+    statusSelect.innerHTML = ''
+    board.cols.map(col => {
+        let optionEl = document.createElement('option')
+            optionEl.setAttribute('value', col.title)
+            optionEl.textContent = col.title
+        statusSelect.append(optionEl)
+    })
+}
+addNewTaskBtn.addEventListener('click', () =>showAddNewTask())
+
+const hideAddNewTask = () => {
+    addNewTaskBackground.setAttribute('hidden',true)
+    addNewTaskContainer.setAttribute('hidden',true)
+    form.reset();
+}
+addNewTaskBackground.addEventListener('click', (e) => {
+    console.log(e)
+    if(e.target.id === addNewTaskBackground.id) hideAddNewTask();
+})
+
+const getRandomPastelColor = () => {
+    const pastelColors = [
+        '#FFB6C1', '#FFC0CB', '#F4D03F', '#F5B183', '#F5F5DC',
+        '#F8D7D4', '#F9E79F', '#F9EBEA', '#FAE5D3', '#FAF0E6',
+        '#FAF3F0', '#FBEEE6', '#FCE4EC', '#FDEBD0'
+      ];
+
+    // Generate a random index
+    const randomIndex = Math.floor(Math.random() * pastelColors.length);
+  
+    // Return the random pastel color
+    return pastelColors[randomIndex];
+}
+
+const form = document.getElementById('task-form')
+form.addEventListener('submit', (event) => {
+    // Prevent the default action (refreshing the page)
+    event.preventDefault();
+
+    // Get the form data
+    const formData = new FormData(form);
+    board = getBoard(appData.currentBoard)
+    board.cols.map(col => {
+        if (formData.get('status') == col.title){
+            col.cards.push(
+                {
+                title: formData.get('title'),
+                description: formData.get('description'),
+                id: generateId('card'),
+                color: getRandomPastelColor(),
+                subtasks: formData.getAll('subtask').map(task => {
+                    return  {
+                            title: task,
+                            isCompleted: false,
+                            id: generateId('task')
+                            }
+                    })
+                }
+            )
+        }
+    })
+    localStorage.setItem('app_data', JSON.stringify(appData));
+    init()
+    form.reset();
+});
