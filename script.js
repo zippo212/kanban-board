@@ -1,127 +1,102 @@
+
+/* <=================================== Elements / Variables ===================================> */
+// Overall containers
+const boardContainer = document.querySelector('#board')
+const BoardSideBar = document.querySelector('#board-sidebar')
+
+// new task modal
+const addNewTaskContainer = document.querySelector('#add-task-container')
+const addNewTaskBtn = document.querySelector('#new-task-btn')
+const statusSelect = document.querySelector('#status') 
+const taskContainer = document.querySelector('#task-container')
+const addNewTaskInputBtn = document.querySelector('#add-new-task-input')
+const taskForm = document.getElementById('task-form')
+
+// new column modal
+const addNewColumnContainer = document.querySelector('#add-column-container')
+const addNewColumnBtnBig = document.querySelector('#column-btn-big')
+const boardName = document.querySelector('#board-name')
+const columnContainer = document.querySelector('#column-container')
+const addNewColumnInputBtn = document.querySelector('#add-new-column-input')
+const columnForm = document.getElementById('column-form')
+
+// new board modal
+const addNewBoardContainer = document.querySelector('#add-board-container')
+const addNewBoardBtn = document.querySelector('#add-board-btn')
+const newBoardColumnContainer = document.querySelector('#new-board-column-container')
+const addNewBoardInputBtn = document.querySelector('#add-new-board-column-input')
+const boardForm = document.getElementById('board-form')
+
+
+const toggleBackground = document.querySelector('#toggle-background')
+
+
 let appData = {
-    boards: [
-        {
-            title: 'Board-1',
-            id: 'b1',
-            cols: [
-                {
-                    title: 'Todo',
-                    id: 'c1',
-                    color: '#ff3f3f',
-                    cards: [
+    boards: [],
+    currentBoard: 0,
+    currentCol: 0,
+    currentCard: 0,
+    identifier: 0,
+    settings: null
+}
+/* <============================================================================================> */
+
+function init() {
+    let data = localStorage.getItem('app_data');
+    if (data) {
+        appData = JSON.parse(data)
+        fillData(appData)
+        setUpDragula()
+    } else {
+        let defaultBoard = {
+            boards: [
+                    {
+                    title: 'Your First Board',
+                    id: 'b-1',
+                    cols: [
                         {
-                            title: 'first',
+                        title: 'Column',
+                        id: 'c-1',
+                        color: '#FFA500',
+                        cards: [
+                            {
+                            title: 'First Card',
                             description: 'this is the first card',
                             id: 'd1',
                             subtasks: [
-                                {
+                                    {
                                     title: 'do something',
                                     isCompleted: false,
                                     id: 's1',
                                 }
                             ]
                         }
+                        ]       
+                        },
                     ]
                 },
-                {
-                    title: 'Doing',
-                    id: 'c2',
-                    color: '#F9EBEA',
-                    cards: [
-                        {
-                            title: 'first second col',
-                            description: 'this is the first card second col',
-                            id: 'd2',
-                            subtasks: [
-                                {
-                                    title: 'do something',
-                                    isCompleted: false,
-                                    id: 's2',
-                                },
-                                {
-                                    title: 'do something2',
-                                    isCompleted: false,
-                                    id: 's3',
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            title: 'Board-2',
-            id: 'b2',
-            cols: [
-                {
-                    title: 'Todo2',
-                    id: 'c5',
-                    color: '#ff3f3f',
-                    cards: [
-                        {
-                            title: 'first',
-                            description: 'this is the first card',
-                            id: 'd5',
-                            subtasks: [
-                                {
-                                    title: 'do something',
-                                    isCompleted: false,
-                                    id: 's4',
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    title: 'Doing2',
-                    id: 'c6',
-                    color: '#FFA500',
-                    cards: [
-                        {
-                            title: 'first second col board2',
-                            description: 'this is the first card second col',
-                            id: 'd6',
-                            subtasks: [
-                                {
-                                    title: 'do something',
-                                    isCompleted: false,
-                                    id: 's5',
-                                },
-                                {
-                                    title: 'do something2',
-                                    isCompleted: false,
-                                    id: 's6',
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+            ],
+            currentBoard: 'b-1',
+            currentCol: 0,
+            currentCard: 0,
+            identifier: 0,
+            settings: null
         }
-    ],
-    currentBoard: 'b1',
-    currentCol: 0,
-    currentCard: 0,
-    identifier: 0,
-    settings: null
-}
-
-function init() {
-    if (!localStorage.getItem('app_data')) {
+        appData = defaultBoard
         localStorage.setItem('app_data', JSON.stringify(appData))
+        fillData(appData)
+        setUpDragula()
     }
-    data = JSON.parse(localStorage.getItem('app_data'))
-    appData = data
-    fillData(data)
+}
+document.body.onload = () => init()
+
+// update dragula with current board for drag functionality
+const setUpDragula = () => {
     let cols = getCols()
     var drake = dragula(cols.map(col => document.getElementById(col.id), { revertOnSpill: true }));
 }
 
-document.body.onload = () => init()
-
-const boardContainer = document.querySelector('#board')
-const BoardSideBar = document.querySelector('#board-sidebar')
-
+// fill the current board with the appropriate elements created from the data
 const fillData = (data) => {
     boardContainer.innerHTML = ''
     BoardSideBar.innerHTML = ''
@@ -171,40 +146,52 @@ const fillData = (data) => {
     })
 }
 
+/* <=================================== Utility Functions ===================================> */
+
+// change the current board value to the new value based on the id and update the view accordingly
 const changeBoard = (id) => {
-    console.log(appData)
     if (appData.currentBoard !== id ) {
         appData.currentBoard = id
         localStorage.setItem('app_data', JSON.stringify(appData))
         init()
     }
 }
-
+// return the current board 
 const getBoard = (id) => {
     let board = appData.boards.filter((board) => board.id == id)
     return board[0]
 }
-
+// return the columns array for the current board
 const getCols = () => {
     let board = getBoard(appData.currentBoard)
     let cols = board.cols
     return cols
 }
-
+// generate id based on the type of element and identifier value
 const generateId = (type) => {
     nextId = appData.identifier
+    // increment identifier after each use to ensure that the id is new
     appData.identifier++
     localStorage.setItem('app_data', JSON.stringify(appData))
     return `${type}-${nextId++}`;
 }
 
+const getRandomVibrantColor = () => {
+    const vibrantColors = [
+        '#ff3f3f', '#FFA500', '#FFFF00', '#99cc99', '#008000', '#0000FF',
+        '#4B0082', '#EE82EE', '#FF69B4', '#8B008B', '#FFD700',
+        '#FF00FF', '#00FFFF','#ff9999', '#ffcc99', '#ffff99', '#99ccff',
+        '#9999e6', '#ffccff', '#ff99cc', '#ffffcc', '#ff99ff', '#99ffff'];
+    // Generate a random index
+    const randomIndex = Math.floor(Math.random() * vibrantColors.length);
+    // Return the random pastel color
+    return vibrantColors[randomIndex];
+}
 
-const addNewTaskContainer = document.querySelector('#add-task-container')
-const addNewTaskBtn = document.querySelector('#new-task-btn')
-const statusSelect = document.querySelector('#status') 
-
+/* <=================================== Modals ===================================> */
+// show add new task modal
 const showAddNewTask = () => {
-    addNewTaskBackground.removeAttribute('hidden')
+    toggleBackground.removeAttribute('hidden')
     addNewTaskContainer.removeAttribute('hidden')
     let cols = getCols()
     statusSelect.innerHTML = ''
@@ -218,63 +205,15 @@ const showAddNewTask = () => {
 }
 addNewTaskBtn.addEventListener('click', () =>showAddNewTask())
 
-
-
-
-const taskContainer = document.querySelector('#task-container')
-const addNewTaskInputBtn = document.querySelector('#add-new-task-input')
+// add input element and append it to inputs container
 const addTaskInput = (e) => {
     e.preventDefault()
-    divEl = createTaskInput()
+    let divEl = createInput('','subtask')
     taskContainer.append(divEl)
 }
 addNewTaskInputBtn.addEventListener('click', (e) =>addTaskInput(e))
 
-const createTaskInput = (task) => {
-    let divEl = document.createElement('div')
-        divEl.classList.add('flex','items-center','gap-2.5')
-    let inputEl = document.createElement('input')
-        inputEl.classList.add('bg-[#2c2c38]','border-2','border-[#353541]','text-gray-900','text-sm','rounded-lg','w-full','p-2.5','placeholder-[#686872]','mb-3')
-        inputEl.setAttribute('type', 'text')
-        inputEl.setAttribute('name', 'subtask')
-        inputEl.value = task ? task.title : ''
-    let spanEl = document.createElement('span')
-        spanEl.classList.add('block')
-        spanEl.innerHTML = 
-        `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-            stroke-width="3" stroke="#828fa3" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>`
-    divEl.append(inputEl,spanEl)
-    return divEl
-}
-
-// const setCurrentCol = () => {
-//     let colValue = statusSelect.value
-//     let cols = getCols()
-//         cols.map(col =>{
-//             if (col.title === )
-//         })
-// }
-// statusSelect.addEventListener('change',()=>setCurrentCol())
-
-
-
-const getRandomVibrantColor = () => {
-    const vibrantColors = [
-        '#ff3f3f', '#FFA500', '#FFFF00', '#99cc99', '#008000', '#0000FF',
-        '#4B0082', '#EE82EE', '#FF69B4', '#8B008B', '#FFD700',
-        '#FF00FF', '#00FFFF','#ff9999', '#ffcc99', '#ffff99', '#99ccff',
-        '#9999e6', '#ffccff', '#ff99cc', '#ffffcc', '#ff99ff', '#99ffff'];
-
-    // Generate a random index
-    const randomIndex = Math.floor(Math.random() * vibrantColors.length);
-  
-    // Return the random pastel color
-    return vibrantColors[randomIndex];
-}
-
-const taskForm = document.getElementById('task-form')
+// get the form data on submit
 taskForm.addEventListener('submit', (event) => {
     // Prevent the default action (refreshing the page)
     event.preventDefault();
@@ -305,65 +244,39 @@ taskForm.addEventListener('submit', (event) => {
     taskForm.reset();
 });
 
-const addNewColumnContainer = document.querySelector('#add-column-container')
-const addNewColumnBtnBig = document.querySelector('#column-btn-big')
-const boardName = document.querySelector('#board-name')
-const columnContainer = document.querySelector('#column-container')
 
-
+// show add new column modal
 const showAddNewColumn = () => {
-    addNewTaskBackground.removeAttribute('hidden')
+    toggleBackground.removeAttribute('hidden')
     addNewColumnContainer.removeAttribute('hidden')
     let board = getBoard(appData.currentBoard)
     boardName.value = board.title
     columnContainer.innerHTML = ''
     board.cols.map(col => {
-        divEl = createColumnInput(col)
+        divEl = createInput(col.title, 'column')
         columnContainer.append(divEl)
     })
 }
 addNewColumnBtnBig.addEventListener('click', () =>showAddNewColumn())
 
-const addNewColumnInputBtn = document.querySelector('#add-new-column-input')
+// add input element and append it to inputs container
 const addColumnInput = (e) => {
     e.preventDefault()
-    divEl = createColumnInput()
+    divEl = createInput('', 'column')
     columnContainer.append(divEl)
 }
 addNewColumnInputBtn.addEventListener('click', (e) =>addColumnInput(e))
 
-const createColumnInput = (col) => {
-    let divEl = document.createElement('div')
-        divEl.classList.add('flex','items-center','gap-2.5')
-    let inputEl = document.createElement('input')
-        inputEl.classList.add('bg-[#2c2c38]','border-2','border-[#353541]','text-gray-900','text-sm','rounded-lg','w-full','p-2.5')
-        inputEl.setAttribute('type', 'text')
-        inputEl.setAttribute('name', 'column')
-        inputEl.setAttribute('required', true)
-        inputEl.value = col ? col.title : ''
-    let spanEl = document.createElement('span')
-        spanEl.classList.add('block')
-        spanEl.innerHTML = 
-        `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-            stroke-width="3" stroke="#828fa3" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>`
-    divEl.append(inputEl,spanEl)
-    return divEl
-}
-
-
-const columnForm = document.getElementById('column-form')
+// get the form data on submit
 columnForm.addEventListener('submit', (event) => {
     // Prevent the default action (refreshing the page)
     event.preventDefault();
-
     // Get the form data
     const formData = new FormData(columnForm);
-    // console.log(formData.getAll('subtask').filter(task => task ? task : undefined))
     let board = getBoard(appData.currentBoard)
     board.title = formData.get('board-name')
-    data = formData.getAll('column')
+    let data = formData.getAll('column')
+    console.log(data)
     data.map((col,i) => {
         if(board.cols[i]) {
             board.cols[i].title = col
@@ -376,20 +289,29 @@ columnForm.addEventListener('submit', (event) => {
             })
         }
     })
+    console.log(appData)
     localStorage.setItem('app_data', JSON.stringify(appData));
     init()
 });
 
-const addNewBoardContainer = document.querySelector('#add-board-container')
-const addNewBoardBtn = document.querySelector('#add-board-btn')
+
+// show add new board modal
 const showAddNewBoard = () => {
-    addNewTaskBackground.removeAttribute('hidden')
+    toggleBackground.removeAttribute('hidden')
     addNewBoardContainer.removeAttribute('hidden')
 }
 addNewBoardBtn.addEventListener('click', () =>showAddNewBoard())
 
+// add input element and append it to inputs container
+const addNewBoardColumnInput = (e) => {
+    e.preventDefault()
+    divEl = createInput('', 'new-board-column')
+    newBoardColumnContainer.append(divEl)
+}
+addNewBoardInputBtn.addEventListener('click', (e) =>addNewBoardColumnInput(e))
 
-const boardForm = document.getElementById('board-form')
+
+// get the form data on submit
 boardForm.addEventListener('submit', (event) => {
     // Prevent the default action (refreshing the page)
     event.preventDefault();
@@ -418,20 +340,38 @@ boardForm.addEventListener('submit', (event) => {
 });
 
 
+// create input element
+const createInput = (title,name) => {
+    let divEl = document.createElement('div')
+        divEl.classList.add('flex','items-center','gap-2.5')
+    let inputEl = document.createElement('input')
+        inputEl.classList.add('bg-[#2c2c38]','border-2','border-[#353541]','text-gray-900','text-sm','rounded-lg','w-full','p-2.5','placeholder-[#686872]','mb-3')
+        inputEl.setAttribute('type', 'text')
+        inputEl.setAttribute('name', name )
+        name === 'column' ? inputEl.setAttribute('required', true) : ''
+        inputEl.value = title
+    let spanEl = document.createElement('span')
+        spanEl.classList.add('block')
+        spanEl.innerHTML = 
+        `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="3" stroke="#828fa3" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>`
+    divEl.append(inputEl,spanEl)
+    return divEl
+}
 
-
-
-
-const addNewTaskBackground = document.querySelector('#add-task-background')
-const hideAddNewTask = () => {
-    addNewTaskBackground.setAttribute('hidden',true)
+// hide the modal and reset to default
+const hideModal = () => {
+    toggleBackground.setAttribute('hidden',true)
     addNewTaskContainer.setAttribute('hidden',true)
     addNewColumnContainer.setAttribute('hidden',true)
     addNewBoardContainer.setAttribute('hidden',true)
     taskForm.reset();
     boardForm.reset()
 }
-addNewTaskBackground.addEventListener('click', (e) => {
+toggleBackground.addEventListener('click', (e) => {
     console.log(e)
-    if(e.target.id === addNewTaskBackground.id) hideAddNewTask();
+    if(e.target.id === toggleBackground.id) hideModal();
 })
+/* <==============================================================================> */

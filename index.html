@@ -47,7 +47,7 @@
     </main>
 
     <!-- modals -->
-    <div id="add-task-background" class="absolute h-screen w-screen bg-[rgb(0,1,8)] opacity-50" hidden></div>
+    <div id="toggle-background" class="absolute h-screen w-screen bg-[rgb(0,1,8)] opacity-50" hidden></div>
     <div id="add-task-container" class="absolute top-0 bottom-0 left-0 right-0 m-auto w-[500px] h-fit max-h-[90vh] overflow-y-auto z-10" hidden>
         <div class="p-8 bg-[#2c2c38] rounded-lg">
             <h2 class="text-lg font-semibold text-white">Add New Task</h2>
@@ -109,10 +109,10 @@
                 </div>
                 <fieldset>
                     <legend class="block mb-1.5 text-sm font-medium text-white">Board Columns</legend>
-                    <div id="column-container" class="space-y-3">
+                    <div id="column-container">
                         <!-- inputs here -->
                     </div>
-                    <button id="add-new-column-input" class="py-3 px-5 bg-white text-[#655ec8] rounded-full font-bold w-full mt-3">+ Add New Column
+                    <button id="add-new-column-input" class="py-3 px-5 bg-white text-[#655ec8] rounded-full font-bold w-full">+ Add New Column
                     </button>
                 </fieldset>
                 <button type="submit" class="py-3 px-5 bg-[#655ec8] text-white rounded-full font-bold w-full mt-3">
@@ -145,7 +145,7 @@
                             <input type="text" name="new-board-column" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Doing">
                             <span class="block">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="#828fa3" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                                 </svg>
                             </span>
                         </div>
@@ -153,7 +153,7 @@
     
                         </div>
                     </div>
-                    <button id="add-new-board-column-input" class="py-3 px-5 bg-white text-[#655ec8] rounded-full font-bold w-full mt-3">+ Add New Column
+                    <button id="add-new-board-column-input" class="py-3 px-5 bg-white text-[#655ec8] rounded-full font-bold w-full">+ Add New Column
                     </button>
                 </fieldset>
                 <button type="submit" class="py-3 px-5 bg-[#655ec8] text-white rounded-full font-bold w-full mt-3">
