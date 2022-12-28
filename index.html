@@ -11,14 +11,21 @@
 </head>
 <body class="flex relative">
 
-    <div class="bg-[#2c2c38] h-screen w-72 p-5 pt-0 border border-[#353541]">
-        <h1 class="text-3xl font-semibold text-white h-[94px] flex items-center mb-5">Kanban</h1>
-        <div class="space-y-8">
-            <p class="uppercase text-xs">All boards (8)</p>
-            <div class="space-y-8"  id="board-sidebar">
+    <div class="bg-[#2c2c38] h-screen w-72 p-5 pl-0 pt-0 border border-[#353541]">
+        <div class="h-[94px] flex items-center mb-5 pl-5">
+            <img src="./logo.svg" alt="logo">
+        </div>
+        <div class="space-y-4">
+            <p class="uppercase font-bold text-xs text-[#828fa3] tracking-[0.15em] pl-5">All boards (8)</p>
+            <div class=""  id="board-sidebar">
                 <!-- Board selection here -->
             </div>
-            <div id="add-board-btn" class="text-[#655ec8] cursor-pointer">+ Create New Board</div>
+            <div id="add-board-btn" class="text-base font-semibold pl-5 py-3 rounded-r-full hover:bg-[#635fc71a] text-[#635fc7] cursor-pointer gap-4 flex items-center fill-[#635fc7]">
+                <div>
+                    <svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M0 2.889A2.889 2.889 0 0 1 2.889 0H13.11A2.889 2.889 0 0 1 16 2.889V13.11A2.888 2.888 0 0 1 13.111 16H2.89A2.889 2.889 0 0 1 0 13.111V2.89Zm1.333 5.555v4.667c0 .859.697 1.556 1.556 1.556h6.889V8.444H1.333Zm8.445-1.333V1.333h-6.89A1.556 1.556 0 0 0 1.334 2.89V7.11h8.445Zm4.889-1.333H11.11v4.444h3.556V5.778Zm0 5.778H11.11v3.11h2a1.556 1.556 0 0 0 1.556-1.555v-1.555Zm0-7.112V2.89a1.555 1.555 0 0 0-1.556-1.556h-2v3.111h3.556Z"></path></svg>
+                </div>
+                <span>+ Create New Board</span>
+            </div>
         </div>
     </div>
 
@@ -51,7 +58,7 @@
     <div id="add-task-container" class="absolute top-0 bottom-0 left-0 right-0 m-auto w-[500px] h-fit max-h-[90vh] overflow-y-auto z-10" hidden>
         <div class="p-8 bg-[#2c2c38] rounded-lg">
             <h2 class="text-lg font-semibold text-white">Add New Task</h2>
-            <form id="task-form" class="pt-5 space-y-5">
+            <form id="task-form" class="pt-5 space-y-5" accept-charset="UTF-8">
                 <div>
                     <label for="title" class="block mb-1.5 text-sm font-medium text-white ">Title</label>
                     <input type="text" id="title" name="title" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Take coffee break" required>
@@ -80,7 +87,7 @@
                         </span>
                     </div>
                     <div id="task-container">
-
+                        <!-- task go here -->
                     </div>
                     </div>
                     <button id="add-new-task-input" class="py-3 px-5 bg-white text-[#655ec8] rounded-full font-bold w-full">+ Add New SubTask
