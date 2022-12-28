@@ -114,7 +114,7 @@ function init() {
     appData = data
     fillData(data)
     let cols = getCols()
-    var drake = dragula(cols.map(col => document.getElementById(col.title), { revertOnSpill: true }));
+    var drake = dragula(cols.map(col => document.getElementById(col.id), { revertOnSpill: true }));
 }
 
 document.body.onload = () => init()
@@ -152,7 +152,7 @@ const fillData = (data) => {
         // create card container
         let cardContainer = document.createElement('div')
         cardContainer.classList.add('w-72', 'pt-5', 'space-y-4', 'min-h-[108px]')
-        cardContainer.setAttribute('id', column.title)
+        cardContainer.setAttribute('id', column.id)
         // append the column elements to the board container
         columnTitle.append(columnTitleDot, columnTitleSpan)
         columnSection.append(columnTitle, cardContainer)
@@ -211,7 +211,7 @@ const showAddNewTask = () => {
     taskContainer.innerHTML = ''
     cols.map(col => {
         let optionEl = document.createElement('option')
-            optionEl.setAttribute('value', col.title)
+            optionEl.setAttribute('value', col.id)
             optionEl.textContent = col.title
         statusSelect.append(optionEl)
     })
@@ -249,6 +249,14 @@ const createTaskInput = (task) => {
     return divEl
 }
 
+// const setCurrentCol = () => {
+//     let colValue = statusSelect.value
+//     let cols = getCols()
+//         cols.map(col =>{
+//             if (col.title === )
+//         })
+// }
+// statusSelect.addEventListener('change',()=>setCurrentCol())
 
 
 
@@ -273,24 +281,20 @@ taskForm.addEventListener('submit', (event) => {
 
     // Get the form data
     const formData = new FormData(taskForm);
-    // console.log(formData.getAll('subtask').filter(task => task ? task : undefined))
     let cols = getCols()
     cols.map(col => {
-        if (formData.get('status') == col.title){
+        if (formData.get('status') == col.id){
             col.cards.push(
                 {
                 title: formData.get('title'),
                 description: formData.get('description'),
                 id: generateId('card'),
-                color: getRandomVibrantColor(),
-                subtasks: formData.getAll('subtask').filter(task => {
-                if(task) {
+                subtasks: formData.getAll('subtask').filter(task => task !== '').map(task => {
                     return  {
                             title: task,
                             isCompleted: false,
                             id: generateId('task')
                             }
-                        } else undefined
                     })
                 }
             )
@@ -376,13 +380,56 @@ columnForm.addEventListener('submit', (event) => {
     init()
 });
 
+const addNewBoardContainer = document.querySelector('#add-board-container')
+const addNewBoardBtn = document.querySelector('#add-board-btn')
+const showAddNewBoard = () => {
+    addNewTaskBackground.removeAttribute('hidden')
+    addNewBoardContainer.removeAttribute('hidden')
+}
+addNewBoardBtn.addEventListener('click', () =>showAddNewBoard())
+
+
+const boardForm = document.getElementById('board-form')
+boardForm.addEventListener('submit', (event) => {
+    // Prevent the default action (refreshing the page)
+    event.preventDefault();
+
+    // Get the form data
+    const formData = new FormData(boardForm);
+    let data = appData
+    console.log(data)
+    data.boards.push(
+        {
+            title: formData.get('new-board-name'),
+            id: generateId('board'),
+            cols: formData.getAll('new-board-column').filter(col => col !== '').map(col => {
+                    return  {
+                            title: col,
+                            id: generateId('column'),
+                            color: getRandomVibrantColor(),
+                            cards: []
+                            }
+                    })
+        }
+    )
+    localStorage.setItem('app_data', JSON.stringify(appData));
+    init()
+    boardForm.reset()
+});
+
+
+
+
+
 
 const addNewTaskBackground = document.querySelector('#add-task-background')
 const hideAddNewTask = () => {
     addNewTaskBackground.setAttribute('hidden',true)
     addNewTaskContainer.setAttribute('hidden',true)
     addNewColumnContainer.setAttribute('hidden',true)
+    addNewBoardContainer.setAttribute('hidden',true)
     taskForm.reset();
+    boardForm.reset()
 }
 addNewTaskBackground.addEventListener('click', (e) => {
     console.log(e)
