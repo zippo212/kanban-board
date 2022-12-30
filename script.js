@@ -39,6 +39,10 @@ let appData = {
     identifier: 0,
     settings: null
 }
+
+// initialize empty array to track columns for removal
+let columns = []
+
 /* <============================================================================================> */
 
 function init() {
@@ -57,7 +61,7 @@ function init() {
                         {
                         title: 'Column',
                         id: 'c-1',
-                        color: '#FFA500',
+                        color: 'bg-[#FFA500]',
                         cards: [
                             {
                             title: 'First Card',
@@ -124,9 +128,9 @@ const fillData = (data) => {
         columnTitle.classList.add('uppercase', 'flex', 'items-center')
         // create title content *Fix dot color later and number in ()* 
         let columnTitleDot = document.createElement('span')
-        columnTitleDot.classList.add('h-3', 'w-3', 'block', `bg-[${column.color}]`, 'rounded-full', 'mr-3')
+        columnTitleDot.classList.add('h-3.5', 'w-3.5', 'block', `${column.color}`, 'rounded-full', 'mr-3')
         let columnTitleSpan = document.createElement('span')
-        columnTitleSpan.classList.add('block')
+        columnTitleSpan.classList.add('block','text-[#828fa3]','font-medium','tracking-widest')
         columnTitleSpan.textContent = column.title + ' ' + '(4)'
         // create card container
         let cardContainer = document.createElement('div')
@@ -139,10 +143,12 @@ const fillData = (data) => {
         // create the card container
         column.cards.map(card => {
             let cardArticle = document.createElement('article')
-            cardArticle.classList.add('w-full', 'px-4', 'py-5', 'bg-[#2c2c38]')
+            cardArticle.classList.add('w-full', 'px-4', 'py-4', 'bg-[#2c2c38]','rounded-lg','shadow-card')
             let cardTitle = document.createElement('h3')
+            cardTitle.className = 'text-white font-semibold pb-[2px]'
             cardTitle.textContent = card.title
             let cardSubTasks = document.createElement('p')
+            cardSubTasks.className = 'text-[#828fa3] font-medium text-[13px]'
             cardSubTasks.textContent = `0 of ${card.subtasks.length} subtasks`
             cardArticle.append(cardTitle, cardSubTasks)
             cardContainer.append(cardArticle)
@@ -182,10 +188,11 @@ const generateId = (type) => {
 
 const getRandomVibrantColor = () => {
     const vibrantColors = [
-        '#ff3f3f', '#FFA500', '#FFFF00', '#99cc99', '#008000', '#0000FF',
-        '#4B0082', '#EE82EE', '#FF69B4', '#8B008B', '#FFD700',
-        '#FF00FF', '#00FFFF','#ff9999', '#ffcc99', '#ffff99', '#99ccff',
-        '#9999e6', '#ffccff', '#ff99cc', '#ffffcc', '#ff99ff', '#99ffff'];
+        'bg-[#ff3f3f]', 'bg-[#FFA500]', 'bg-[#FFFF00]', 'bg-[#99cc99]', 'bg-[#008000]', 'bg-[#0000FF]',
+        'bg-[#4B0082]', 'bg-[#EE82EE]', 'bg-[#FF69B4]', 'bg-[#8B008B]', 'bg-[#FFD700]',
+        'bg-[#FF00FF]', 'bg-[#00FFFF]','bg-[#ff9999]', 'bg-[#ffcc99]', 'bg-[#ffff99]', 'bg-[#99ccff]',
+        'bg-[#9999e6]', 'bg-[#ffccff]', 'bg-[#ff99cc]', 'bg-[#ffffcc]', 'bg-[#ff99ff]', 'bg-[#99ffff]',
+        'bg-[#FF4500]', 'bg-[#6495ED]', 'bg-[#7CFC00]', 'bg-[#FF1493]', 'bg-[#00BFFF]']
     // Generate a random index
     const randomIndex = Math.floor(Math.random() * vibrantColors.length);
     // Return the random pastel color
@@ -216,6 +223,7 @@ const addTaskInput = (e) => {
     taskContainer.append(divEl)
 }
 addNewTaskInputBtn.addEventListener('click', (e) =>addTaskInput(e))
+
 
 // get the form data on submit
 taskForm.addEventListener('submit', (event) => {
@@ -258,7 +266,7 @@ const showAddNewColumn = () => {
     boardName.value = board.title
     columnContainer.innerHTML = ''
     board.cols.map(col => {
-        divEl = createInput(col.title, 'column')
+        divEl = createInput(col.title, 'column', col.id)
         columnContainer.append(divEl)
     })
 }
@@ -280,8 +288,14 @@ columnForm.addEventListener('submit', (event) => {
     const formData = new FormData(columnForm);
     let board = getBoard(appData.currentBoard)
     board.title = formData.get('board-name')
+    // if columns not empty then go over each id find that index and splice it out
+    if(columns.length > 0){
+        columns.forEach(col => {
+            const index = board.cols.findIndex(elem => elem.id === col);
+            board.cols.splice(index, 1);
+        })
+    }
     let data = formData.getAll('column')
-    console.log(data)
     data.map((col,i) => {
         if(board.cols[i]) {
             board.cols[i].title = col
@@ -294,9 +308,10 @@ columnForm.addEventListener('submit', (event) => {
             })
         }
     })
-    console.log(appData)
     localStorage.setItem('app_data', JSON.stringify(appData));
     init()
+    // reset the columns array
+    columns = []
 });
 
 
@@ -324,11 +339,11 @@ boardForm.addEventListener('submit', (event) => {
     // Get the form data
     const formData = new FormData(boardForm);
     let data = appData
-    console.log(data)
+    let boardId = generateId('board')
     data.boards.push(
         {
             title: formData.get('new-board-name'),
-            id: generateId('board'),
+            id: boardId,
             cols: formData.getAll('new-board-column').filter(col => col !== '').map(col => {
                     return  {
                             title: col,
@@ -339,6 +354,7 @@ boardForm.addEventListener('submit', (event) => {
                     })
         }
     )
+    data.currentBoard = boardId
     localStorage.setItem('app_data', JSON.stringify(appData));
     init()
     newBoardColumnContainer.innerHTML = ''
@@ -347,25 +363,38 @@ boardForm.addEventListener('submit', (event) => {
 
 
 // create input element
-const createInput = (title,name) => {
+const createInput = (title,name,id) => {
     let divEl = document.createElement('div')
         divEl.classList.add('flex','items-center','gap-2.5')
+        // if id is passed add it to the div
+        id ? divEl.setAttribute('id', id ) : ''
     let inputEl = document.createElement('input')
-        inputEl.classList.add('bg-[#2c2c38]','border-2','border-[#353541]','text-gray-900','text-sm','rounded-lg','w-full','p-2.5','placeholder-[#686872]','mb-3')
+        inputEl.classList.add('bg-[#2c2c38]','border-2','border-[#353541]','text-gray-900','text-sm','rounded-lg','w-full','p-2.5','placeholder-[#686872]')
         inputEl.setAttribute('type', 'text')
         inputEl.setAttribute('name', name )
         name === 'column' ? inputEl.setAttribute('required', true) : ''
         inputEl.value = title
-    let spanEl = document.createElement('span')
-        spanEl.classList.add('block')
-        spanEl.innerHTML = 
-        `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-            stroke-width="3" stroke="#828fa3" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>`
-    divEl.append(inputEl,spanEl)
+    let svgEl = document.createElement('span')
+        svgEl.className = 'material-symbols-sharp text-[#828fa3] hover:text-red-400 cursor-pointer'
+        svgEl.setAttribute('onclick',"removeTaskInput(event)")
+        svgEl.textContent = 'close'
+    divEl.append(inputEl,svgEl)
     return divEl
 }
+
+
+// remove input element
+const removeTaskInput = (e) => {
+    let id = e.path[1].id
+    let inputEl = e.path[1]
+        // remove the input from the DOM
+        inputEl.remove()
+    // if id is passed push it to the empty array columns
+    if(id) {
+        columns.push(id)
+    }
+}
+
 
 // hide the modal and reset to default
 const hideModal = () => {
@@ -375,6 +404,8 @@ const hideModal = () => {
     addNewBoardContainer.setAttribute('hidden',true)
     taskForm.reset();
     boardForm.reset()
+    // reset the columns array
+    columns = []
 }
 toggleBackground.addEventListener('click', (e) => {
     console.log(e)

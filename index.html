@@ -7,11 +7,11 @@
     <link href="/dist/output.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.6.6/dragula.css" integrity="sha512-gGkweS4I+MDqo1tLZtHl3Nu3PGY7TU8ldedRnu60fY6etWjQ/twRHRG2J92oDj7GDU2XvX8k6G5mbp0yCoyXCA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
-    <title>Document</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,700,0,0" />
 </head>
 <body class="flex relative">
 
-    <div class="bg-[#2c2c38] h-screen w-72 p-5 pl-0 pt-0 border border-[#353541]">
+    <div class="bg-[#2c2c38] h-screen w-72 p-5 pl-0 pt-0 border-[1.5px] border-[#353541]">
         <div class="h-[94px] flex items-center mb-5 pl-5">
             <img src="./logo.svg" alt="logo">
         </div>
@@ -30,13 +30,15 @@
     </div>
 
     <main class="w-[calc(100%_-_288px)] flex flex-col">
-        <header class="bg-[#2c2c38] flex justify-between items-center p-5 pb-6 border border-[#353541]">
+        <header class="bg-[#2c2c38] flex justify-between items-center p-5 pb-6 border-[1.5px] border-[#353541] border-l-0">
             <h1 class="text-2xl font-semibold text-white">Platform Launch</h1>
             <div class="flex items-center space-x-5">
                 <button id="new-task-btn" class="py-3 px-5 bg-[#655ec8] rounded-full text-white font-semibold">+ Add New Task
                 </button>
-                <span class="material-symbols-outlined text-[#828fa3]">
-                    more_vert
+                <span class="text-[#828fa3]">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+                    </svg>
                 </span>
             </div>
 
@@ -46,7 +48,7 @@
                 <!-- columns and cards here -->
             </div>
             <div class="w-72 pt-11">
-                <div id="column-btn-big" class="w-72 h-full bg-[#23232f] flex items-center justify-center cursor-pointer">
+                <div id="column-btn-big" class="w-72 h-full bg-gradient-to-b from-[#2c2c38] to-[#2B2C37]/25 flex items-center justify-center cursor-pointer">
                     <h3 class="text-2xl font-semibold text-white">+ New Column</h3>
                 </div>
             </div>
@@ -72,21 +74,11 @@
                     <div class="space-y-3">
                     <div class="flex items-center gap-2.5">
                         <input type="text" name="subtask" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Make coffee">
-                        <span class="block">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="#828fa3" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </span>
                     </div>
                     <div class="flex items-center gap-2.5">
                         <input type="text" name="subtask" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Drink coffee & smile">
-                        <span class="block">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="#828fa3" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </span>
                     </div>
-                    <div id="task-container">
+                    <div id="task-container" class="space-y-3 !mb-3">
                         <!-- task go here -->
                     </div>
                     </div>
@@ -116,7 +108,7 @@
                 </div>
                 <fieldset>
                     <legend class="block mb-1.5 text-sm font-medium text-white">Board Columns</legend>
-                    <div id="column-container">
+                    <div id="column-container" class="space-y-3 !mb-3">
                         <!-- inputs here -->
                     </div>
                     <button id="add-new-column-input" class="py-3 px-5 bg-white text-[#655ec8] rounded-full font-bold w-full">+ Add New Column
@@ -142,22 +134,12 @@
                     <div class="space-y-3">
                         <div class="flex items-center gap-2.5">
                             <input type="text" name="new-board-column" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Todo">
-                            <span class="block">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="#828fa3" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </span>
                         </div>
                         <div class="flex items-center gap-2.5">
                             <input type="text" name="new-board-column" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Doing">
-                            <span class="block">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="#828fa3" class="w-6 h-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
-                                </svg>
-                            </span>
                         </div>
-                        <div id="new-board-column-container">
-    
+                        <div id="new-board-column-container" class="space-y-3 !mb-3">
+                            <!-- inputs -->
                         </div>
                     </div>
                     <button id="add-new-board-column-input" class="py-3 px-5 bg-white text-[#655ec8] rounded-full font-bold w-full">+ Add New Column
