@@ -27,6 +27,12 @@ const newBoardColumnContainer = document.querySelector('#new-board-column-contai
 const addNewBoardInputBtn = document.querySelector('#add-new-board-column-input')
 const boardForm = document.getElementById('board-form')
 
+// edit board header component
+const showEditBoardBtn = document.querySelector('#edit-board-btn')
+const editBoardContainer = document.querySelector('#show-edit-board')
+const deleteBoardContainer = document.querySelector('#delete-board-container')
+const deleteBoardBtn = document.querySelector('#delete-board-btn')
+
 
 const toggleBackground = document.querySelector('#toggle-background')
 
@@ -143,17 +149,23 @@ const fillData = (data) => {
         // create the card container
         column.cards.map(card => {
             let cardArticle = document.createElement('article')
-            cardArticle.classList.add('w-full', 'px-4', 'py-4', 'bg-[#2c2c38]','rounded-lg','shadow-card')
+            cardArticle.classList.add('w-full', 'px-4', 'py-4', 'bg-[#2c2c38]','rounded-lg','shadow-card','card')
+            cardArticle.setAttribute('id',card.id)
             let cardTitle = document.createElement('h3')
-            cardTitle.className = 'text-white font-semibold pb-[2px]'
+            cardTitle.className = 'text-white font-semibold pb-[2px] pointer-events-none'
             cardTitle.textContent = card.title
             let cardSubTasks = document.createElement('p')
-            cardSubTasks.className = 'text-[#828fa3] font-medium text-[13px]'
+            cardSubTasks.className = 'text-[#828fa3] font-medium text-[13px] pointer-events-none'
             cardSubTasks.textContent = `0 of ${card.subtasks.length} subtasks`
             cardArticle.append(cardTitle, cardSubTasks)
             cardContainer.append(cardArticle)
         })
     })
+    // get all the cards
+    let cards = document.querySelectorAll('.card');
+    for (let i = 0; i < cards.length; i++) {
+        cards[i].addEventListener('click',(e)=>showCard(e))
+    }
 }
 
 /* <=================================== Utility Functions ===================================> */
@@ -184,6 +196,17 @@ const generateId = (type) => {
     appData.identifier++
     localStorage.setItem('app_data', JSON.stringify(appData))
     return `${type}-${nextId++}`;
+}
+// return all the data for specific card
+const getCardInfo = () => {
+    let data = appData
+    let cols = getCols()
+    console.log(cols)
+    const colIndex = cols.findIndex(col => col.id === data.currentCol);
+    console.log(colIndex)
+    const cardIndex = cols[colIndex].cards.findIndex(card => card.id === data.currentCard);
+    let card = cols[colIndex].cards[cardIndex]
+    return card
 }
 
 const getRandomVibrantColor = () => {
@@ -227,12 +250,12 @@ addNewTaskInputBtn.addEventListener('click', (e) =>addTaskInput(e))
 
 // get the form data on submit
 taskForm.addEventListener('submit', (event) => {
+    console.log('test')
     // Prevent the default action (refreshing the page)
     event.preventDefault();
-
+    let cols = getCols()
     // Get the form data
     const formData = new FormData(taskForm);
-    let cols = getCols()
     cols.map(col => {
         if (formData.get('status') == col.id){
             col.cards.push(
@@ -262,6 +285,7 @@ taskForm.addEventListener('submit', (event) => {
 const showAddNewColumn = () => {
     toggleBackground.removeAttribute('hidden')
     addNewColumnContainer.removeAttribute('hidden')
+    editBoardContainer.setAttribute('hidden',true)
     let board = getBoard(appData.currentBoard)
     boardName.value = board.title
     columnContainer.innerHTML = ''
@@ -402,6 +426,9 @@ const hideModal = () => {
     addNewTaskContainer.setAttribute('hidden',true)
     addNewColumnContainer.setAttribute('hidden',true)
     addNewBoardContainer.setAttribute('hidden',true)
+    editBoardContainer.setAttribute('hidden',true)
+    deleteBoardContainer.setAttribute('hidden',true)
+    // document.getElementById('modal').remove()
     taskForm.reset();
     boardForm.reset()
     // reset the columns array
@@ -411,4 +438,110 @@ toggleBackground.addEventListener('click', (e) => {
     console.log(e)
     if(e.target.id === toggleBackground.id) hideModal();
 })
+
+// show the header component
+const showEditBoard = () => {
+    toggleBackground.removeAttribute('hidden')
+    editBoardContainer.removeAttribute('hidden')
+}
+showEditBoardBtn.addEventListener('click',showEditBoard) 
+
+// show delete board modal
+const showDeleteBoard = () => {
+    editBoardContainer.setAttribute('hidden',true)
+    deleteBoardContainer.removeAttribute('hidden')
+}
+
+// delete board function
+const deleteBoard = () => {
+    let data = appData
+    // check if there's more than one board (minimum one is required)
+    if (data.boards.length > 1) {
+        // find the board index
+        const index = data.boards.findIndex(elem => elem.id === data.currentBoard);
+        // splice it out
+        data.boards.splice(index, 1);
+        // set the new current board value to the previous board
+        data.currentBoard = index === 0 ? data.boards[index].id : data.boards[index-1].id
+        // save and initialize
+        localStorage.setItem('app_data', JSON.stringify(appData));
+        init()
+        hideModal()
+        alert('sucsses')
+    } else {
+        // display error message
+        hideModal()
+        alert('error')
+    }
+}
+deleteBoardBtn.addEventListener('click',deleteBoard)
+
+// card component
+const showCard = (e) => {
+    toggleBackground.removeAttribute('hidden')
+    let data = appData
+    data.currentCard = e.target.id
+    data.currentCol = e.path[1].id
+    let card = getCardInfo()
+    console.log(card.subtasks.filter(task => !task.isCompleted))
+    let modalContainer = document.createElement('div')
+    modalContainer.setAttribute('id','modal')
+    modalContainer.className = 'absolute top-0 bottom-0 left-0 right-0 m-auto w-[500px] h-fit max-h-[90vh] overflow-y-auto z-10'
+        let modalDiv = document.createElement('div')
+        modalDiv.className = 'p-7 bg-[#2c2c38] rounded-lg'
+        let titleDiv = document.createElement('div')
+        titleDiv.className = 'flex items-center justify-between pb-5'
+        let titleEl = document.createElement('h2')
+        titleEl.className = 'text-lg font-semibold text-white'
+        titleEl.textContent = card.title
+        let titleDots = document.createElement('span')
+        titleDots.className = 'text-[#828fa3] cursor-pointer'
+        titleDots.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
+        </svg>`
+        titleDiv.append(titleEl,titleDots)
+        let descriptionEl = document.createElement('p')
+        descriptionEl.textContent = card.description
+        descriptionEl.className = 'text-[#828fa3] text-[13px] font-medium leading-relaxed pb-5'
+        let divCheckBoxEl = document.createElement('div')
+        let checkBoxLabel = document.createElement('label')
+        checkBoxLabel.className = 'block mb-1.5 text-sm font-medium text-white'
+        checkBoxLabel.textContent = `Subtasks (${'?'} of ${card.subtasks.length})`
+        divCheckBoxEl.append(checkBoxLabel)
+        card.subtasks.map((task) =>{
+            let inputDiv = document.createElement('div')
+            inputDiv.className = 'flex items-center px-3 rounded-lg bg-[#21212d] my-2'
+            let inputEl = document.createElement('input')
+            inputEl.className = 'w-[18px] h-[18px] accent-[#635fc7] text-blue-500 rounded-sm cursor-pointer group'
+            inputEl.setAttribute('type', 'checkbox')
+            inputEl.setAttribute('id', task.id)
+            inputEl.setAttribute('name', 'task-checkbox')
+            let labelEl = document.createElement('label')
+            labelEl.className = 'py-4 ml-3 w-full text-[13px] font-bold text-white cursor-pointer group-checked:line-through'
+            labelEl.setAttribute('for', task.id)
+            labelEl.textContent = task.title
+            inputDiv.append(inputEl,labelEl)
+            divCheckBoxEl.append(inputDiv)
+        })
+        let divStatusEl = document.createElement('div')
+        let statusLabel = document.createElement('label')
+        statusLabel.className = 'block mb-1.5 text-sm font-medium text-white pt-5'
+        statusLabel.textContent = 'Status'
+        let selectStatusEl = document.createElement('select')
+        selectStatusEl.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white text-sm rounded-lg block w-full p-2.5'
+        selectStatusEl.setAttribute('id', 'card-status')
+        selectStatusEl.setAttribute('name', 'card-status')
+        let cols = getCols()
+        cols.map(col => {
+            let optionEl = document.createElement('option')
+                optionEl.setAttribute('value', col.id)
+                optionEl.textContent = col.title
+            selectStatusEl.append(optionEl)
+        })
+        divStatusEl.append(statusLabel,selectStatusEl)
+        modalDiv.append(titleDiv,descriptionEl,divCheckBoxEl,divStatusEl)
+        modalContainer.append(modalDiv)
+        document.body.append(modalContainer)
+}
 /* <==============================================================================> */

@@ -28,21 +28,28 @@
             </div>
         </div>
     </div>
-
+    
     <main class="w-[calc(100%_-_288px)] flex flex-col">
+
         <header class="bg-[#2c2c38] flex justify-between items-center p-5 pb-6 border-[1.5px] border-[#353541] border-l-0">
             <h1 class="text-2xl font-semibold text-white">Platform Launch</h1>
-            <div class="flex items-center space-x-5">
+            <div class="flex items-center space-x-5 relative">
                 <button id="new-task-btn" class="py-3 px-5 bg-[#655ec8] rounded-full text-white font-semibold">+ Add New Task
                 </button>
-                <span class="text-[#828fa3]">
+                <span id="edit-board-btn" class="text-[#828fa3] cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                     </svg>
                 </span>
+                <div id="show-edit-board" class="w-36 h-24 bg-[#21212d] absolute -bottom-24 -right-5 rounded-l-lg py-3 px-5 z-10" hidden>
+                    <ul class=" w-full h-full flex flex-col justify-between">
+                        <li class="text-[#828fa3] font-bold cursor-pointer" onclick="showAddNewColumn()">Edit Board</li>
+                        <li class="text-red-400 font-bold cursor-pointer" onclick="showDeleteBoard()">Delete Board</li>
+                    </ul>
+                </div>
             </div>
-
         </header>
+
         <div class="bg-[#21212d] flex p-5 pb-16 space-x-5 w-full h-full overflow-auto">
             <div class="flex space-x-5" id="board">
                 <!-- columns and cards here -->
@@ -58,7 +65,7 @@
     <!-- modals -->
     <div id="toggle-background" class="absolute h-screen w-screen bg-[rgb(0,1,8)] opacity-50" hidden></div>
     <div id="add-task-container" class="absolute top-0 bottom-0 left-0 right-0 m-auto w-[500px] h-fit max-h-[90vh] overflow-y-auto z-10" hidden>
-        <div class="p-8 bg-[#2c2c38] rounded-lg">
+        <div class="p-7 bg-[#2c2c38] rounded-lg">
             <h2 class="text-lg font-semibold text-white">Add New Task</h2>
             <form id="task-form" class="pt-5 space-y-5" accept-charset="UTF-8">
                 <div>
@@ -72,24 +79,25 @@
                 <fieldset>
                     <legend class="block mb-1.5 text-sm font-medium text-white">Subtasks</legend>
                     <div class="space-y-3">
-                    <div class="flex items-center gap-2.5">
-                        <input type="text" name="subtask" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Make coffee">
+                        <div class="flex items-center gap-2.5">
+                            <input type="text" name="subtask" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Make coffee">
+                        </div>
+                        <div class="flex items-center gap-2.5">
+                            <input type="text" name="subtask" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Drink coffee & smile">
+                        </div>
+                        <div id="task-container" class="space-y-3 !mb-3">
+                            <!-- task go here -->
+                        </div>
                     </div>
-                    <div class="flex items-center gap-2.5">
-                        <input type="text" name="subtask" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Drink coffee & smile">
-                    </div>
-                    <div id="task-container" class="space-y-3 !mb-3">
-                        <!-- task go here -->
-                    </div>
-                    </div>
-                    <button id="add-new-task-input" class="py-3 px-5 bg-white text-[#655ec8] rounded-full font-bold w-full">+ Add New SubTask
+                    <button id="add-new-task-input" class="py-3 px-5 bg-white text-[#655ec8] rounded-full font-bold w-full">
+                        + Add New SubTask
                     </button>
                 </fieldset>
                 <div>
-                <label for="status" class="block mb-1.5 text-sm font-medium text-white">Status</label>
-                <select id="status" name="status" class="bg-[#2c2c38] border-2 border-[#353541] text-white text-sm rounded-lg block w-full p-2.5">
-                    <!-- options here -->
-                </select>
+                    <label for="status" class="block mb-1.5 text-sm font-medium text-white">Status</label>
+                    <select id="status" name="status" class="bg-[#2c2c38] border-2 border-[#353541] text-white text-sm rounded-lg block w-full p-2.5">
+                        <!-- options here -->
+                    </select>
                 </div>
                 <button type="submit" class="py-3 px-5 bg-[#655ec8] text-white rounded-full font-bold w-full mt-3">
                     Create Task
@@ -99,7 +107,7 @@
     </div>
 
     <div id="add-column-container" class="absolute top-0 bottom-0 left-0 right-0 m-auto w-[500px] h-fit max-h-[90vh] overflow-y-auto z-10" hidden>
-        <div class="p-8 bg-[#2c2c38] rounded-lg">
+        <div class="p-7 bg-[#2c2c38] rounded-lg">
             <h2 class="text-lg font-semibold text-white">Edit Board</h2>
             <form id="column-form" class="pt-5 space-y-5">
                 <div>
@@ -122,7 +130,7 @@
     </div>
 
     <div id="add-board-container" class="absolute top-0 bottom-0 left-0 right-0 m-auto w-[500px] h-fit max-h-[90vh] overflow-y-auto z-10" hidden>
-        <div class="p-8 bg-[#2c2c38] rounded-lg">
+        <div class="p-7 bg-[#2c2c38] rounded-lg">
             <h2 class="text-lg font-semibold text-white">Add New Board</h2>
             <form id="board-form" class="pt-5 space-y-5">
                 <div>
@@ -149,6 +157,19 @@
                     Create New Board
                 </button>
             </form>
+        </div>
+    </div>
+
+    <div id="delete-board-container" class="absolute top-0 bottom-0 left-0 right-0 m-auto w-[500px] h-fit max-h-[90vh] overflow-y-auto z-10" hidden>
+        <div class="p-7 bg-[#2c2c38] rounded-lg">
+            <h2 class="text-lg font-semibold text-red-400 pb-7">Delete this board</h2>
+            <p class="text-sm text-[#828fa3] font-medium pb-6">Are you Sure you want to delete the 'Name' board? This action will remove all columns and tasks and cannot be reversed.</p>
+            <button id="delete-board-btn" class="py-3 px-5 bg-red-400 text-white rounded-full font-semibold w-full mb-4">
+                Delete
+            </button>
+            <button class="py-3 px-5 text-[#655ec8] bg-white rounded-full font-semibold w-full" onclick="hideModal()">
+                Cancel
+            </button>
         </div>
     </div>
 
