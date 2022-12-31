@@ -27,6 +27,14 @@ const newBoardColumnContainer = document.querySelector('#new-board-column-contai
 const addNewBoardInputBtn = document.querySelector('#add-new-board-column-input')
 const boardForm = document.getElementById('board-form')
 
+// card modal
+const cardContainer = document.querySelector('#card-modal')
+const cardTitle = document.querySelector('#card-title')
+const cardDescription = document.querySelector('#card-description')
+const cardSubTasksLabel = document.querySelector('#card-tasks-label')
+const divCheckBoxEl = document.querySelector('#card-checkbox')
+const selectStatusEl = document.querySelector('#card-status-select')
+
 // edit board header component
 const showEditBoardBtn = document.querySelector('#edit-board-btn')
 const editBoardContainer = document.querySelector('#show-edit-board')
@@ -428,14 +436,15 @@ const hideModal = () => {
     addNewBoardContainer.setAttribute('hidden',true)
     editBoardContainer.setAttribute('hidden',true)
     deleteBoardContainer.setAttribute('hidden',true)
-    // document.getElementById('modal').remove()
+    cardContainer.setAttribute('hidden',true)
+    cardModal = document.getElementById('modal')
+    if(cardModal) cardModal.remove()
     taskForm.reset();
     boardForm.reset()
     // reset the columns array
     columns = []
 }
 toggleBackground.addEventListener('click', (e) => {
-    console.log(e)
     if(e.target.id === toggleBackground.id) hideModal();
 })
 
@@ -478,38 +487,39 @@ deleteBoardBtn.addEventListener('click',deleteBoard)
 
 // card component
 const showCard = (e) => {
+    cardContainer.removeAttribute('hidden')
     toggleBackground.removeAttribute('hidden')
+    divCheckBoxEl.innerHTML = ''
+    selectStatusEl.innerHTML = ''
     let data = appData
     data.currentCard = e.target.id
     data.currentCol = e.path[1].id
     let card = getCardInfo()
-    console.log(card.subtasks.filter(task => !task.isCompleted))
-    let modalContainer = document.createElement('div')
-    modalContainer.setAttribute('id','modal')
-    modalContainer.className = 'absolute top-0 bottom-0 left-0 right-0 m-auto w-[500px] h-fit max-h-[90vh] overflow-y-auto z-10'
-        let modalDiv = document.createElement('div')
-        modalDiv.className = 'p-7 bg-[#2c2c38] rounded-lg'
-        let titleDiv = document.createElement('div')
-        titleDiv.className = 'flex items-center justify-between pb-5'
-        let titleEl = document.createElement('h2')
-        titleEl.className = 'text-lg font-semibold text-white'
-        titleEl.textContent = card.title
-        let titleDots = document.createElement('span')
-        titleDots.className = 'text-[#828fa3] cursor-pointer'
-        titleDots.innerHTML = `
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
-        </svg>`
-        titleDiv.append(titleEl,titleDots)
-        let descriptionEl = document.createElement('p')
-        descriptionEl.textContent = card.description
-        descriptionEl.className = 'text-[#828fa3] text-[13px] font-medium leading-relaxed pb-5'
-        let divCheckBoxEl = document.createElement('div')
-        let checkBoxLabel = document.createElement('label')
-        checkBoxLabel.className = 'block mb-1.5 text-sm font-medium text-white'
-        checkBoxLabel.textContent = `Subtasks (${'?'} of ${card.subtasks.length})`
-        divCheckBoxEl.append(checkBoxLabel)
-        card.subtasks.map((task) =>{
+    cardTitle.textContent = card.title
+    cardDescription.textContent = card.description
+    updateSubTasks(card)
+    let cols = getCols()
+    const defaultOption = document.createElement('option')
+    defaultOption.value =  data.currentCol
+    const defaultOptionTitle = cols.findIndex(col => col.id === data.currentCol)
+    defaultOption.textContent = cols[defaultOptionTitle].title
+    defaultOption.selected = true;
+    selectStatusEl.append(defaultOption)
+        cols.map(col => {
+            if (col.id !== defaultOption.value) {
+            let optionEl = document.createElement('option')
+                optionEl.setAttribute('value', col.id)
+                optionEl.textContent = col.title
+            selectStatusEl.append(optionEl)
+            }
+        })
+}
+
+const updateSubTasks = (card) => {
+    let length = card.subtasks.length
+    let completedLength = card.subtasks.filter(task => task.isCompleted).length
+    cardSubTasksLabel.textContent = `Subtasks (${completedLength} of ${length})`
+    card.subtasks.map((task) =>{
             let inputDiv = document.createElement('div')
             inputDiv.className = 'flex items-center px-3 rounded-lg bg-[#21212d] my-2'
             let inputEl = document.createElement('input')
@@ -524,24 +534,20 @@ const showCard = (e) => {
             inputDiv.append(inputEl,labelEl)
             divCheckBoxEl.append(inputDiv)
         })
-        let divStatusEl = document.createElement('div')
-        let statusLabel = document.createElement('label')
-        statusLabel.className = 'block mb-1.5 text-sm font-medium text-white pt-5'
-        statusLabel.textContent = 'Status'
-        let selectStatusEl = document.createElement('select')
-        selectStatusEl.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white text-sm rounded-lg block w-full p-2.5'
-        selectStatusEl.setAttribute('id', 'card-status')
-        selectStatusEl.setAttribute('name', 'card-status')
-        let cols = getCols()
-        cols.map(col => {
-            let optionEl = document.createElement('option')
-                optionEl.setAttribute('value', col.id)
-                optionEl.textContent = col.title
-            selectStatusEl.append(optionEl)
-        })
-        divStatusEl.append(statusLabel,selectStatusEl)
-        modalDiv.append(titleDiv,descriptionEl,divCheckBoxEl,divStatusEl)
-        modalContainer.append(modalDiv)
-        document.body.append(modalContainer)
 }
+
+const updateCardStatus = (e) => {
+    data = appData
+    let oldCols = getCols()
+    const oldColIndex = oldCols.findIndex(col => col.id === data.currentCol)
+    const oldCardIndex = oldCols[oldColIndex].cards.findIndex(card => card.id === data.currentCard)
+    const removedCard = oldCols[oldColIndex].cards.splice(oldCardIndex, 1)[0];
+    data.currentCol = e.target.value
+    let newCols = getCols()
+    const newColIndex = newCols.findIndex(col => col.id === data.currentCol)
+    newCols[newColIndex].cards.push(removedCard)
+    localStorage.setItem('app_data', JSON.stringify(appData))
+    init()
+}
+selectStatusEl.addEventListener('change',(e)=>updateCardStatus(e))
 /* <==============================================================================> */

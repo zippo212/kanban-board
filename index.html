@@ -173,6 +173,37 @@
         </div>
     </div>
 
+    <div id="card-modal" class="absolute top-0 bottom-0 left-0 right-0 m-auto w-[500px] h-fit max-h-[90vh] overflow-y-auto z-10" hidden>
+        <div class="p-7 bg-[#2c2c38] rounded-lg">
+            <div class="flex items-center justify-between pb-5">
+                <h2 id="card-title" class="text-lg font-semibold text-white">
+                    <!-- title here -->
+                </h2>
+                <span class="text-[#828fa3] cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"></path>
+                    </svg>
+                </span>
+            </div>
+            <p id="card-description" class="text-[#828fa3] text-[13px] font-medium leading-relaxed pb-5">
+                <!-- description here -->
+            </p>
+            <div id="card-checkbox">
+                <label id="card-tasks-label" class="block mb-1.5 text-sm font-medium text-white">
+                    <!-- label here -->
+                </label>
+            </div>
+            <div>
+                <label class="block mb-1.5 text-sm font-medium text-white pt-5">
+                    Status
+                </label>
+                <select id="card-status-select" class="bg-[#2c2c38] border-2 border-[#353541] text-white text-sm rounded-lg block w-full p-2.5" id="card-status" name="card-status">
+                    <!-- options here -->
+                </select>
+            </div>
+        </div>
+    </div>
+
     <script src="./script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.6.6/dragula.min.js" integrity="sha512-MrA7WH8h42LMq8GWxQGmWjrtalBjrfIzCQ+i2EZA26cZ7OBiBd/Uct5S3NP9IBqKx5b+MMNH1PhzTsk6J9nPQQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </body>
