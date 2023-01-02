@@ -7,16 +7,17 @@
     <link href="/dist/output.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.6.6/dragula.css" integrity="sha512-gGkweS4I+MDqo1tLZtHl3Nu3PGY7TU8ldedRnu60fY6etWjQ/twRHRG2J92oDj7GDU2XvX8k6G5mbp0yCoyXCA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,700,0,0" />
 </head>
-<body class="flex relative">
+<body class="flex relative" style="font-family: 'Montserrat', sans-serif">
 
-    <div class="bg-[#2c2c38] h-screen w-72 p-5 pl-0 pt-0 border-[1.5px] border-[#353541]">
+    <div class="bg-[#2c2c38] lg:bg-white h-screen w-72 p-5 pl-0 pt-0 border-[1.5px] border-[#353541] flex-none">
         <div class="h-[94px] flex items-center mb-5 pl-5">
             <img src="./logo.svg" alt="logo">
         </div>
         <div class="space-y-4">
-            <p class="uppercase font-bold text-xs text-[#828fa3] tracking-[0.15em] pl-5">All boards (8)</p>
+            <p class="uppercase font-bold text-xs text-[#828fa3] tracking-[0.15em] pl-5" id="all-boards-title"></p>
             <div class=""  id="board-sidebar">
                 <!-- Board selection here -->
             </div>
@@ -29,12 +30,12 @@
         </div>
     </div>
     
-    <main class="w-[calc(100%_-_288px)] flex flex-col">
+    <main class="w-full h-screen flex flex-col">
 
         <header class="bg-[#2c2c38] flex justify-between items-center p-5 pb-6 border-[1.5px] border-[#353541] border-l-0">
-            <h1 class="text-2xl font-semibold text-white">Platform Launch</h1>
+            <h1 class="text-2xl font-semibold text-white"  id="header-board-name">Platform Launch</h1>
             <div class="flex items-center space-x-5 relative">
-                <button id="new-task-btn" class="py-3 px-5 bg-[#655ec8] rounded-full text-white font-semibold">+ Add New Task
+                <button id="new-task-btn" class="py-3 px-5 bg-[#655ec8] hover:bg-[#a8a4ff] rounded-full text-white font-semibold">+ Add New Task
                 </button>
                 <span id="edit-board-btn" class="text-[#828fa3] cursor-pointer">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7">
@@ -55,8 +56,8 @@
                 <!-- columns and cards here -->
             </div>
             <div class="w-72 pt-11">
-                <div id="column-btn-big" class="w-72 h-full bg-gradient-to-b from-[#2c2c38] to-[#2B2C37]/25 flex items-center justify-center cursor-pointer">
-                    <h3 class="text-2xl font-semibold text-white">+ New Column</h3>
+                <div id="column-btn-big" class="w-72 h-full bg-gradient-to-b from-[#2c2c38] to-[#2B2C37]/25 flex items-center justify-center cursor-pointer rounded-lg text-[#828fa3] hover:text-[#655ec8]">
+                    <h3 class="text-2xl font-semibold">+ New Column</h3>
                 </div>
             </div>
         </div>
@@ -70,20 +71,20 @@
             <form id="task-form" class="pt-5 space-y-5" accept-charset="UTF-8">
                 <div>
                     <label for="title" class="block mb-1.5 text-sm font-medium text-white ">Title</label>
-                    <input type="text" id="title" name="title" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Take coffee break" required>
+                    <input type="text" id="title" name="title" class="bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Take coffee break" required>
                 </div>
                 <div>
                     <label for="description" class="block mb-1.5 text-sm font-medium text-white">Description</label>
-                    <textarea id="description" name="description" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-[#2c2c38] rounded-lg border-2 border-[#353541] placeholder-[#686872]" placeholder="e.g. It's always good to take a break, This 15 minutes break will recharge the batteries a little."></textarea>
+                    <textarea id="description" name="description" rows="4" class="block p-2.5 w-full text-sm text-white font-medium bg-[#2c2c38] rounded-lg border-2 border-[#353541] placeholder-[#686872]" placeholder="e.g. It's always good to take a break, This 15 minutes break will recharge the batteries a little."></textarea>
                 </div>
                 <fieldset>
                     <legend class="block mb-1.5 text-sm font-medium text-white">Subtasks</legend>
                     <div class="space-y-3">
                         <div class="flex items-center gap-2.5">
-                            <input type="text" name="subtask" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Make coffee">
+                            <input type="text" name="subtask" class="bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Make coffee">
                         </div>
                         <div class="flex items-center gap-2.5">
-                            <input type="text" name="subtask" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Drink coffee & smile">
+                            <input type="text" name="subtask" class="bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Drink coffee & smile">
                         </div>
                         <div id="task-container" class="space-y-3 !mb-3">
                             <!-- task go here -->
@@ -99,7 +100,7 @@
                         <!-- options here -->
                     </select>
                 </div>
-                <button type="submit" class="py-3 px-5 bg-[#655ec8] text-white rounded-full font-bold w-full mt-3">
+                <button type="submit" class="py-3 px-5 bg-[#655ec8] hover:bg-[#a8a4ff] text-white rounded-full font-bold w-full mt-3">
                     Create Task
                 </button>
             </form> 
@@ -112,7 +113,7 @@
             <form id="column-form" class="pt-5 space-y-5">
                 <div>
                     <label for="board-name" class="block mb-1.5 text-sm font-medium text-white ">Board Name</label>
-                    <input type="text" id="board-name" name="board-name" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5" required>
+                    <input type="text" id="board-name" name="board-name" class="bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg  w-full p-2.5" required>
                 </div>
                 <fieldset>
                     <legend class="block mb-1.5 text-sm font-medium text-white">Board Columns</legend>
@@ -122,7 +123,7 @@
                     <button id="add-new-column-input" class="py-3 px-5 bg-white text-[#655ec8] rounded-full font-bold w-full">+ Add New Column
                     </button>
                 </fieldset>
-                <button type="submit" class="py-3 px-5 bg-[#655ec8] text-white rounded-full font-bold w-full mt-3">
+                <button type="submit" class="py-3 px-5 bg-[#655ec8] hover:bg-[#a8a4ff] text-white rounded-full font-bold w-full mt-3">
                     Save Changes
                 </button>
             </form>
@@ -135,16 +136,16 @@
             <form id="board-form" class="pt-5 space-y-5">
                 <div>
                     <label for="new-board-name" class="block mb-1.5 text-sm font-medium text-white ">Board Name</label>
-                    <input type="text" id="new-board-name" name="new-board-name" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Web Design" required>
+                    <input type="text" id="new-board-name" name="new-board-name" class="bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Web Design" required>
                 </div>
                 <fieldset>
                     <legend class="block mb-1.5 text-sm font-medium text-white">Board Columns</legend>
                     <div class="space-y-3">
                         <div class="flex items-center gap-2.5">
-                            <input type="text" name="new-board-column" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Todo">
+                            <input type="text" name="new-board-column" class="bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Todo">
                         </div>
                         <div class="flex items-center gap-2.5">
-                            <input type="text" name="new-board-column" class="bg-[#2c2c38] border-2 border-[#353541] text-gray-900 text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Doing">
+                            <input type="text" name="new-board-column" class="bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]" placeholder="e.g. Doing">
                         </div>
                         <div id="new-board-column-container" class="space-y-3 !mb-3">
                             <!-- inputs -->
@@ -153,7 +154,7 @@
                     <button id="add-new-board-column-input" class="py-3 px-5 bg-white text-[#655ec8] rounded-full font-bold w-full">+ Add New Column
                     </button>
                 </fieldset>
-                <button type="submit" class="py-3 px-5 bg-[#655ec8] text-white rounded-full font-bold w-full mt-3">
+                <button type="submit" class="py-3 px-5 bg-[#655ec8] hover:bg-[#a8a4ff] text-white rounded-full font-bold w-full mt-3">
                     Create New Board
                 </button>
             </form>
@@ -164,7 +165,20 @@
         <div class="p-7 bg-[#2c2c38] rounded-lg">
             <h2 class="text-lg font-semibold text-red-400 pb-7">Delete this board</h2>
             <p class="text-sm text-[#828fa3] font-medium pb-6">Are you Sure you want to delete the 'Name' board? This action will remove all columns and tasks and cannot be reversed.</p>
-            <button id="delete-board-btn" class="py-3 px-5 bg-red-400 text-white rounded-full font-semibold w-full mb-4">
+            <button id="delete-board-btn" class="py-3 px-5 bg-red-400 hover:bg-[#ff9898] text-white rounded-full font-semibold w-full mb-4">
+                Delete
+            </button>
+            <button class="py-3 px-5 text-[#655ec8] bg-white rounded-full font-semibold w-full" onclick="hideModal()">
+                Cancel
+            </button>
+        </div>
+    </div>
+    
+    <div id="delete-card-container" class="absolute top-0 bottom-0 left-0 right-0 m-auto w-[500px] h-fit max-h-[90vh] overflow-y-auto z-10" hidden>
+        <div class="p-7 bg-[#2c2c38] rounded-lg">
+            <h2 class="text-lg font-semibold text-red-400 pb-7">Delete this Task</h2>
+            <p class="text-sm text-[#828fa3] font-medium pb-6">Are you sure you want to delete the 'Review early feedback and plan next steps for roadmap' task and its subtasks? This action cannot be reversed.</p>
+            <button id="delete-card-btn" class="py-3 px-5 bg-red-400 hover:bg-[#ff9898] text-white rounded-full font-semibold w-full mb-4">
                 Delete
             </button>
             <button class="py-3 px-5 text-[#655ec8] bg-white rounded-full font-semibold w-full" onclick="hideModal()">
@@ -175,15 +189,21 @@
 
     <div id="card-modal" class="absolute top-0 bottom-0 left-0 right-0 m-auto w-[500px] h-fit max-h-[90vh] overflow-y-auto z-10" hidden>
         <div class="p-7 bg-[#2c2c38] rounded-lg">
-            <div class="flex items-center justify-between pb-5">
+            <div class="flex items-center justify-between pb-5 relative">
                 <h2 id="card-title" class="text-lg font-semibold text-white">
                     <!-- title here -->
                 </h2>
-                <span class="text-[#828fa3] cursor-pointer">
+                <span class="text-[#828fa3] cursor-pointer" id="edit-card-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"></path>
                     </svg>
                 </span>
+                <div id="show-edit-card" class="w-36 h-24 bg-[#21212d] absolute -bottom-[76px] -right-7 rounded-lg py-3 px-5 z-10" hidden>
+                    <ul class=" w-full h-full flex flex-col justify-between">
+                        <li class="text-[#828fa3] font-bold cursor-pointer" onclick="showEditTask()">Edit Task</li>
+                        <li class="text-red-400 font-bold cursor-pointer" onclick="showDeleteTask()">Delete Task</li>
+                    </ul>
+                </div>
             </div>
             <p id="card-description" class="text-[#828fa3] text-[13px] font-medium leading-relaxed pb-5">
                 <!-- description here -->
@@ -201,6 +221,41 @@
                     <!-- options here -->
                 </select>
             </div>
+        </div>
+    </div>
+
+    <div id="edit-task-container" class="absolute top-0 bottom-0 left-0 right-0 m-auto w-[500px] h-fit max-h-[90vh] overflow-y-auto z-10" hidden>
+        <div class="p-7 bg-[#2c2c38] rounded-lg">
+            <h2 class="text-lg font-semibold text-white">Edit Task</h2>
+            <form id="edit-task-form" class="pt-5 space-y-5" accept-charset="UTF-8">
+                <div>
+                    <label for="edit-title" class="block mb-1.5 text-sm font-medium text-white ">Title</label>
+                    <input type="text" id="edit-title" name="edit-title" class="bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg  w-full p-2.5"
+                    required>
+                </div>
+                <div>
+                    <label for="edit-description" class="block mb-1.5 text-sm font-medium text-white">Description</label>
+                    <textarea id="edit-description" name="edit-description" rows="4" class="block p-2.5 w-full text-sm text-white font-semibold bg-[#2c2c38] rounded-lg border-2 border-[#353541]"></textarea>
+                </div>
+                <fieldset>
+                    <legend class="block mb-1.5 text-sm font-medium text-white">Subtasks</legend>
+                        <div id="edit-subtask-container" class="space-y-3 !mb-3">
+                            <!-- task go here -->
+                        </div>
+                    <button id="add-new-edit-task-input" class="py-3 px-5 bg-white text-[#655ec8] rounded-full font-bold w-full">
+                        + Add New SubTask
+                    </button>
+                </fieldset>
+                <div>
+                    <label for="edit-status" class="block mb-1.5 text-sm font-medium text-white">Status</label>
+                    <select id="edit-status" name="edit-status" class="bg-[#2c2c38] border-2 border-[#353541] text-white text-sm rounded-lg block w-full p-2.5">
+                        <!-- options here -->
+                    </select>
+                </div>
+                <button type="submit" class="py-3 px-5 bg-[#655ec8] hover:bg-[#a8a4ff] text-white rounded-full font-bold w-full mt-3">
+                    Save
+                </button>
+            </form> 
         </div>
     </div>
 
