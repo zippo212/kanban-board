@@ -23,13 +23,15 @@ const showEditBoardBtn = document.querySelectorAll('.edit-board-btn')
 const editBoardContainer = document.querySelectorAll('.show-edit-board')
 
 // edit card header component
-const showEditCardBtn = document.querySelector('#edit-card-btn')
 const deleteCardContainer = document.querySelector('#delete-card-container')
 const deleteCardBtn = document.querySelector('#delete-card-btn')
 
 // sidebar and header
-const sidebarTitle = document.querySelectorAll('.all-boards-title')
+const sidebarTitle = document.querySelector('#all-boards-title')
 const headerBoardName = document.querySelectorAll('.header-board-name')
+
+// mobile board menu
+const mobileBoardMenu = document.querySelector('#mobile-board-menu')
 
 const toggleBackground = document.querySelector('#toggle-background')
 
@@ -123,11 +125,10 @@ const updatePositionOnDrop = (drake,cols) => {
 
 // fill the current board with the appropriate elements created from the data
 const fillData = (data) => {
-    console.log(BoardSideBar)
     boardContainer.innerHTML = ''
     BoardSideBar.innerHTML = ''
     // create sidebar menu(boards list)
-    sidebarTitle.forEach(el => el.textContent = `All Boards (${data.boards.length})`)
+    sidebarTitle.textContent = `All Boards (${data.boards.length})`
     headerBoardName.forEach(title => {
         title.textContent = getBoard(appData.currentBoard).title
     })
@@ -142,7 +143,6 @@ const fillData = (data) => {
             spanEl.textContent = board.title
             boardSelection.append(svgDiv,spanEl)
             BoardSideBar.append(boardSelection)
-            // BoardSideBarMobile.append(boardSelection)
     })
     let cols = getCols()
     // create column
@@ -582,7 +582,7 @@ const updateCardStatus = (e) => {
 // show the edit card component
 const showEditCardMenu = () => {
     const editCardContainer = document.querySelector('#show-edit-card')
-    editCardContainer.removeAttribute('hidden')
+    editCardContainer.toggleAttribute('hidden')
 }
 
 // show delete Card modal
@@ -1048,3 +1048,45 @@ const createCardModal = (card,data) => {
     console.log(div2)
     return [cardModal,div2]
 }
+
+const createMobileBoardMenu = () => {
+const data = appData
+    const MobileBoardContainer = document.createElement('div');
+    MobileBoardContainer.id = 'board-container-mobile';
+    MobileBoardContainer.className = 'absolute top-0 bottom-0 left-0 right-0 m-auto w-64 h-fit max-h-[80vh] md:max-h-[90vh] overflow-y-auto z-10';
+    const innerDiv = document.createElement('div');
+    innerDiv.className = 'p-5 pl-0 bg-[#2c2c38] rounded-lg';
+    const p = document.createElement('p');
+    p.className = 'uppercase font-bold text-xs text-[#828fa3] tracking-wide pl-5 all-boards-title mb-3';
+    p.textContent = `All Boards (${data.boards.length})`
+    innerDiv.append(p)
+    data.boards.map((board) => {
+        let boardSelection = document.createElement('div')
+            boardSelection.setAttribute('id',board.id)
+            boardSelection.onclick = () => {
+                changeBoard(board.id)
+                toggleBackground.setAttribute('hidden',true)
+                MobileBoardContainer.remove()
+            }
+            boardSelection.className = `${data.currentBoard === board.id ? 'bg-[#635fc7] text-white fill-white' : 'bg-transparent text-[#828fa3] fill-[#828fa3]'} text-base font-semibold pl-5 py-3 rounded-r-full hover:bg-[#635fc71a] hover:text-[#635fc7] cursor-pointer gap-4 flex items-center hover:fill-[#635fc7]`
+            svgDiv = document.createElement('div')
+            svgDiv.innerHTML = '<svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M0 2.889A2.889 2.889 0 0 1 2.889 0H13.11A2.889 2.889 0 0 1 16 2.889V13.11A2.888 2.888 0 0 1 13.111 16H2.89A2.889 2.889 0 0 1 0 13.111V2.89Zm1.333 5.555v4.667c0 .859.697 1.556 1.556 1.556h6.889V8.444H1.333Zm8.445-1.333V1.333h-6.89A1.556 1.556 0 0 0 1.334 2.89V7.11h8.445Zm4.889-1.333H11.11v4.444h3.556V5.778Zm0 5.778H11.11v3.11h2a1.556 1.556 0 0 0 1.556-1.555v-1.555Zm0-7.112V2.89a1.555 1.555 0 0 0-1.556-1.556h-2v3.111h3.556Z"></path></svg>'
+            spanEl = document.createElement('span')
+            spanEl.textContent = board.title
+            boardSelection.append(svgDiv,spanEl)
+            innerDiv.append(boardSelection)
+    })
+    const addBoardBtn = document.createElement('div');
+    addBoardBtn.onclick = () => {
+        showAddNewBoard()
+        MobileBoardContainer.remove()
+    }
+    addBoardBtn.id = 'add-board-btn-mobile';
+    addBoardBtn.className = 'text-base font-semibold pl-5 py-3 rounded-r-full hover:bg-[#635fc71a] text-[#635fc7] cursor-pointer gap-4 flex items-center fill-[#635fc7] mt-3';
+    addBoardBtn.innerHTML = '<div><svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M0 2.889A2.889 2.889 0 0 1 2.889 0H13.11A2.889 2.889 0 0 1 16 2.889V13.11A2.888 2.888 0 0 1 13.111 16H2.89A2.889 2.889 0 0 1 0 13.111V2.89Zm1.333 5.555v4.667c0 .859.697 1.556 1.556 1.556h6.889V8.444H1.333Zm8.445-1.333V1.333h-6.89A1.556 1.556 0 0 0 1.334 2.89V7.11h8.445Zm4.889-1.333H11.11v4.444h3.556V5.778Zm0 5.778H11.11v3.11h2a1.556 1.556 0 0 0 1.556-1.555v-1.555Zm0-7.112V2.89a1.555 1.555 0 0 0-1.556-1.556h-2v3.111h3.556Z"></path></svg></div><span>+ Create New Board</span>';
+    innerDiv.append(addBoardBtn);
+    MobileBoardContainer.append(innerDiv);
+    document.body.append(MobileBoardContainer);
+    modalBackground(MobileBoardContainer)
+}
+mobileBoardMenu.addEventListener('click',createMobileBoardMenu)
