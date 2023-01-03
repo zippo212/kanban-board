@@ -3,65 +3,35 @@
 // Overall containers
 const boardContainer = document.querySelector('#board')
 const BoardSideBar = document.querySelector('#board-sidebar')
+const BoardSideBarMobile = document.querySelector('#board-sidebar-mobile')
 
 // new task modal
-const addNewTaskContainer = document.querySelector('#add-task-container')
-const addNewTaskBtn = document.querySelector('#new-task-btn')
-const statusSelect = document.querySelector('#status') 
-const taskContainer = document.querySelector('#task-container')
-const addNewTaskInputBtn = document.querySelector('#add-new-task-input')
-const taskForm = document.getElementById('task-form')
+const addNewTaskBtn = document.querySelectorAll('.new-task-btn')
 
 // edit task modal
-const showEditTaskContainer = document.querySelector('#edit-task-container')
-const editStatusSelect = document.querySelector('#edit-status') 
-const editTaskTitle = document.querySelector('#edit-title') 
-const editTaskDescription = document.querySelector('#edit-description') 
-const editTaskContainer = document.querySelector('#edit-subtask-container')
-const addNewEditTaskInputBtn = document.querySelector('#add-new-edit-task-input')
-const editTaskForm = document.getElementById('edit-task-form')
 
 // new column modal
-const addNewColumnContainer = document.querySelector('#add-column-container')
 const addNewColumnBtnBig = document.querySelector('#column-btn-big')
-const boardName = document.querySelector('#board-name')
-const columnContainer = document.querySelector('#column-container')
-const addNewColumnInputBtn = document.querySelector('#add-new-column-input')
-const columnForm = document.getElementById('column-form')
 
 // new board modal
-const addNewBoardContainer = document.querySelector('#add-board-container')
 const addNewBoardBtn = document.querySelector('#add-board-btn')
-const newBoardColumnContainer = document.querySelector('#new-board-column-container')
-const addNewBoardInputBtn = document.querySelector('#add-new-board-column-input')
-const boardForm = document.getElementById('board-form')
 
 // card modal
-const cardContainer = document.querySelector('#card-modal')
-const cardTitle = document.querySelector('#card-title')
-const cardDescription = document.querySelector('#card-description')
-const cardSubTasksLabel = document.querySelector('#card-tasks-label')
-const divCheckBoxEl = document.querySelector('#card-checkbox')
-const selectStatusEl = document.querySelector('#card-status-select')
 
 // edit board header component
-const showEditBoardBtn = document.querySelector('#edit-board-btn')
-const editBoardContainer = document.querySelector('#show-edit-board')
-const deleteBoardContainer = document.querySelector('#delete-board-container')
-const deleteBoardBtn = document.querySelector('#delete-board-btn')
+const showEditBoardBtn = document.querySelectorAll('.edit-board-btn')
+const editBoardContainer = document.querySelectorAll('.show-edit-board')
 
 // edit card header component
 const showEditCardBtn = document.querySelector('#edit-card-btn')
-const editCardContainer = document.querySelector('#show-edit-card')
 const deleteCardContainer = document.querySelector('#delete-card-container')
 const deleteCardBtn = document.querySelector('#delete-card-btn')
 
 // sidebar and header
-const sidebarTitle = document.querySelector('#all-boards-title')
-const headerBoardName = document.querySelector('#header-board-name')
+const sidebarTitle = document.querySelectorAll('.all-boards-title')
+const headerBoardName = document.querySelectorAll('.header-board-name')
 
 const toggleBackground = document.querySelector('#toggle-background')
-
 
 let appData = {
     boards: [],
@@ -88,22 +58,22 @@ function init() {
             boards: [
                     {
                     title: 'Your First Board',
-                    id: 'b-1',
+                    id: 'default-board-1',
                     cols: [
                         {
                         title: 'Column',
-                        id: 'c-1',
+                        id: 'default-column-1',
                         color: 'bg-[#FFA500]',
                         cards: [
                             {
                             title: 'First Card',
                             description: 'this is the first card',
-                            id: 'd1',
+                            id: 'default-card-1',
                             subtasks: [
                                     {
                                     title: 'do something',
                                     isCompleted: false,
-                                    id: 's1',
+                                    id: 'default-task-1',
                                 }
                             ]
                         }
@@ -112,7 +82,7 @@ function init() {
                     ]
                 },
             ],
-            currentBoard: 'b-1',
+            currentBoard: 'default-board-1',
             currentCol: 0,
             currentCard: 0,
             identifier: 0,
@@ -153,11 +123,14 @@ const updatePositionOnDrop = (drake,cols) => {
 
 // fill the current board with the appropriate elements created from the data
 const fillData = (data) => {
+    console.log(BoardSideBar)
     boardContainer.innerHTML = ''
     BoardSideBar.innerHTML = ''
     // create sidebar menu(boards list)
-    sidebarTitle.textContent = `All Boards (${data.boards.length})`
-    headerBoardName.textContent = getBoard(appData.currentBoard).title
+    sidebarTitle.forEach(el => el.textContent = `All Boards (${data.boards.length})`)
+    headerBoardName.forEach(title => {
+        title.textContent = getBoard(appData.currentBoard).title
+    })
     data.boards.map((board) => {
         let boardSelection = document.createElement('div')
             boardSelection.setAttribute('id',board.id)
@@ -168,7 +141,8 @@ const fillData = (data) => {
             spanEl = document.createElement('span')
             spanEl.textContent = board.title
             boardSelection.append(svgDiv,spanEl)
-                BoardSideBar.append(boardSelection)
+            BoardSideBar.append(boardSelection)
+            // BoardSideBarMobile.append(boardSelection)
     })
     let cols = getCols()
     // create column
@@ -272,37 +246,44 @@ const getRandomVibrantColor = () => {
 /* <=================================== Modals ===================================> */
 // show add new task modal
 const showAddNewTask = () => {
-    toggleBackground.removeAttribute('hidden')
-    addNewTaskContainer.removeAttribute('hidden')
-    let cols = getCols()
-    statusSelect.innerHTML = ''
-    taskContainer.innerHTML = ''
-    cols.map(col => {
-        let optionEl = document.createElement('option')
-            optionEl.setAttribute('value', col.id)
-            optionEl.textContent = col.title
-        statusSelect.append(optionEl)
-    })
+    const container = createBaseContainer('add-task-container')
+    const innerContainer = createBaseInner('Add New Task')
+    const form = createForm('task-form')
+    const formTitle = createFormTitle('Title','title','e.g. Take coffee break',true,'task')
+    const formDescription = createDescriptionForm('description',"e.g. It's always good to take a break, This 15 minutes break will recharge the batteries a little.")
+    const formFieldSet = createFieldSetFrom(true,'Subtasks','task-container','add-new-task-input','+ Add New SubTask','task')
+    const formStatus = createStatusFrom('status')
+    const formSubmitBtn = createSubmitBtnForm('Create Task')
+
+    form.append(formTitle)
+    form.append(formDescription)
+    form.append(formFieldSet)
+    form.append(formStatus)
+    form.append(formSubmitBtn)
+    form.addEventListener('submit', (e) => onTaskFormSubmit(e,form,container))
+
+    innerContainer.append(form)
+    container.append(innerContainer)
+    document.body.append(container)
+    modalBackground(container)
 }
-addNewTaskBtn.addEventListener('click', () =>showAddNewTask())
+addNewTaskBtn.forEach(el => el.addEventListener('click',showAddNewTask))
 
 // add input element and append it to inputs container
-const addTaskInput = (e) => {
+const addTaskInput = (e,taskContainer) => {
     e.preventDefault()
     let divEl = createInput('','subtask')
     taskContainer.append(divEl)
 }
-addNewTaskInputBtn.addEventListener('click', (e) =>addTaskInput(e))
-
 
 // get the form data on submit
-taskForm.addEventListener('submit', (event) => {
+const onTaskFormSubmit = (e,form,container) => {
     console.log('test')
     // Prevent the default action (refreshing the page)
-    event.preventDefault();
+    e.preventDefault();
     let cols = getCols()
     // Get the form data
-    const formData = new FormData(taskForm);
+    const formData = new FormData(form);
     cols.map(col => {
         if (formData.get('status') == col.id){
             col.cards.push(
@@ -323,40 +304,45 @@ taskForm.addEventListener('submit', (event) => {
     })
     localStorage.setItem('app_data', JSON.stringify(appData));
     init()
-    taskContainer.innerHTML = ''
-    taskForm.reset();
-});
-
+    toggleBackground.setAttribute('hidden',true);
+    // remove card here
+    container.remove();
+}
 
 // show add new column modal
 const showAddNewColumn = () => {
-    toggleBackground.removeAttribute('hidden')
-    addNewColumnContainer.removeAttribute('hidden')
-    editBoardContainer.setAttribute('hidden',true)
-    let board = getBoard(appData.currentBoard)
-    boardName.value = board.title
-    columnContainer.innerHTML = ''
-    board.cols.map(col => {
-        divEl = createInput(col.title, 'column', col.id)
-        columnContainer.append(divEl)
-    })
+    const container = createBaseContainer('add-column-container')
+    const innerContainer = createBaseInner('Edit Board')
+    const form = createForm('column-form')
+    const formTitle = createFormTitle('Board Name','board-name',false,true,'column')
+    const formFieldSet = createFieldSetFrom(false,'Board Columns','column-container','add-new-column-input','+ Add New Column','column')
+    const formSubmitBtn = createSubmitBtnForm('Save Changes')
+
+    form.append(formTitle)
+    form.append(formFieldSet)
+    form.append(formSubmitBtn)
+    form.addEventListener('submit', (e) => onColumnFormSubmit(e,form,container))
+
+    innerContainer.append(form)
+    container.append(innerContainer)
+    document.body.append(container)
+    modalBackground(container)
 }
-addNewColumnBtnBig.addEventListener('click', () =>showAddNewColumn())
+addNewColumnBtnBig.addEventListener('click',showAddNewColumn)
 
 // add input element and append it to inputs container
-const addColumnInput = (e) => {
+const addColumnInput = (e,columnContainer) => {
     e.preventDefault()
     divEl = createInput('', 'column')
     columnContainer.append(divEl)
 }
-addNewColumnInputBtn.addEventListener('click', (e) =>addColumnInput(e))
 
 // get the form data on submit
-columnForm.addEventListener('submit', (event) => {
+const onColumnFormSubmit = (e,form,container) => {
     // Prevent the default action (refreshing the page)
-    event.preventDefault();
+    e.preventDefault();
     // Get the form data
-    const formData = new FormData(columnForm);
+    const formData = new FormData(form);
     let board = getBoard(appData.currentBoard)
     board.title = formData.get('board-name')
     // if columns not empty then go over each id find that index and splice it out
@@ -381,34 +367,46 @@ columnForm.addEventListener('submit', (event) => {
     })
     localStorage.setItem('app_data', JSON.stringify(appData));
     init()
+    toggleBackground.setAttribute('hidden',true);
     // reset the columns array
     columns = []
-});
-
+    container.remove();
+};
 
 // show add new board modal
 const showAddNewBoard = () => {
-    toggleBackground.removeAttribute('hidden')
-    addNewBoardContainer.removeAttribute('hidden')
+    const container = createBaseContainer('add-board-container')
+    const innerContainer = createBaseInner('Add New Board')
+    const form = createForm('board-form')
+    const formTitle = createFormTitle('Board Name','new-board-name','e.g. Web Design',true,'board')
+    const formFieldSet = createFieldSetFrom(true,'Board Columns','new-board-column-container','add-new-board-column-input','+ Add New Column','board')
+    const formSubmitBtn = createSubmitBtnForm('Create New Board')
+
+    form.append(formTitle)
+    form.append(formFieldSet)
+    form.append(formSubmitBtn)
+    form.addEventListener('submit', (e) => onBoardFormSubmit(e,form,container))
+
+    innerContainer.append(form)
+    container.append(innerContainer)
+    document.body.append(container)
+    modalBackground(container)
 }
-addNewBoardBtn.addEventListener('click', () =>showAddNewBoard())
+addNewBoardBtn.addEventListener('click',showAddNewBoard)
 
 // add input element and append it to inputs container
-const addNewBoardColumnInput = (e) => {
+const addNewBoardColumnInput = (e,newBoardColumnContainer) => {
     e.preventDefault()
     divEl = createInput('', 'new-board-column')
     newBoardColumnContainer.append(divEl)
 }
-addNewBoardInputBtn.addEventListener('click', (e) =>addNewBoardColumnInput(e))
 
-
-// get the form data on submit
-boardForm.addEventListener('submit', (event) => {
+// // get the form data on submit
+const onBoardFormSubmit = (e,form,container) => {
     // Prevent the default action (refreshing the page)
-    event.preventDefault();
-
+    e.preventDefault();
     // Get the form data
-    const formData = new FormData(boardForm);
+    const formData = new FormData(form);
     let data = appData
     let boardId = generateId('board')
     data.boards.push(
@@ -428,10 +426,9 @@ boardForm.addEventListener('submit', (event) => {
     data.currentBoard = boardId
     localStorage.setItem('app_data', JSON.stringify(appData));
     init()
-    newBoardColumnContainer.innerHTML = ''
-    boardForm.reset()
-});
-
+    toggleBackground.setAttribute('hidden',true);
+    container.remove();
+};
 
 // create input element
 const createInput = (title,name,id) => {
@@ -453,59 +450,54 @@ const createInput = (title,name,id) => {
     return divEl
 }
 
-
 // remove input element
 const removeTaskInput = (e) => {
     let id = e.path[1].id
     let inputEl = e.path[1]
+    console.log(id)
         // remove the input from the DOM
         inputEl.remove()
     // if id is passed push it to the empty array columns
-    if(id) {
+    if(id.includes('column')) {
         columns.push(id)
     }
 }
 
+const  modalBackground = (container) => {
+    toggleBackground.removeAttribute('hidden');
+    toggleBackground.addEventListener('click',(e) => {
+        if (e.target.id === toggleBackground.id) {
+            toggleBackground.setAttribute('hidden',true);
+            container.remove();
+        };
+    });
+    if (container.id.includes('column')) {
+        columns = []
+    }
+};
 
-// hide the modal and reset to default
-const hideModal = () => {
-    toggleBackground.setAttribute('hidden',true)
-    addNewTaskContainer.setAttribute('hidden',true)
-    addNewColumnContainer.setAttribute('hidden',true)
-    addNewBoardContainer.setAttribute('hidden',true)
-    editBoardContainer.setAttribute('hidden',true)
-    editCardContainer.setAttribute('hidden',true)
-    deleteBoardContainer.setAttribute('hidden',true)
-    cardContainer.setAttribute('hidden',true)
-    deleteCardContainer.setAttribute('hidden',true)
-    showEditTaskContainer.setAttribute('hidden',true)
-    cardModal = document.getElementById('modal')
-    if(cardModal) cardModal.remove()
-    taskForm.reset();
-    boardForm.reset()
-    // reset the columns array
-    columns = []
+// show the component
+const showEditBoardMenu = () => {
+    editBoardContainer.forEach(el => el.toggleAttribute('hidden'));
 }
-toggleBackground.addEventListener('click', (e) => {
-    if(e.target.id === toggleBackground.id) hideModal();
-})
+showEditBoardBtn.forEach(el => el.addEventListener('click',showEditBoardMenu));
 
-// show the header component
 const showEditBoard = () => {
-    toggleBackground.removeAttribute('hidden')
-    editBoardContainer.removeAttribute('hidden')
-}
-showEditBoardBtn.addEventListener('click',showEditBoard) 
+    editBoardContainer.forEach(el => el.setAttribute('hidden',true));
+    showAddNewColumn();
+};
 
 // show delete board modal
 const showDeleteBoard = () => {
-    editBoardContainer.setAttribute('hidden',true)
-    deleteBoardContainer.removeAttribute('hidden')
-}
+    editBoardContainer.forEach(el => el.setAttribute('hidden',true));
+    const container = createDeleteContainer("delete-board-container","Delete this board","Are you Sure you want to delete the 'Name' board? This action will remove all columns and tasks and cannot be reversed.","delete-board-btn",'board');
+    document.body.append(container);
+    modalBackground(container);
+};
 
 // delete board function
-const deleteBoard = () => {
-    let data = appData
+const deleteBoard = (deleteContainer) => {
+    const data = appData
     // check if there's more than one board (minimum one is required)
     if (data.boards.length > 1) {
         // find the board index
@@ -517,55 +509,36 @@ const deleteBoard = () => {
         // save and initialize
         localStorage.setItem('app_data', JSON.stringify(appData));
         init()
-        hideModal()
+        toggleBackground.setAttribute('hidden',true);
+        deleteContainer.remove();
         alert('sucsses')
     } else {
         // display error message
-        hideModal()
+        toggleBackground.setAttribute('hidden',true);
+        deleteContainer.remove();
         alert('error')
     }
 }
-deleteBoardBtn.addEventListener('click',deleteBoard)
 
 // card component
 const showCard = (e) => {
-    cardContainer.removeAttribute('hidden')
-    toggleBackground.removeAttribute('hidden')
-    divCheckBoxEl.innerHTML = ''
-    selectStatusEl.innerHTML = ''
     let data = appData
     data.currentCard = e.target.id
     data.currentCol = e.path[1].id
     let card = getCardInfo()
-    cardTitle.textContent = card.title
-    cardDescription.textContent = card.description
-    updateSubTasks()
-    let cols = getCols()
-    const defaultOption = document.createElement('option')
-    defaultOption.value =  data.currentCol
-    const defaultOptionTitle = cols.findIndex(col => col.id === data.currentCol)
-    defaultOption.textContent = cols[defaultOptionTitle].title
-    defaultOption.selected = true;
-    selectStatusEl.append(defaultOption)
-        cols.map(col => {
-            if (col.id !== defaultOption.value) {
-            let optionEl = document.createElement('option')
-                optionEl.setAttribute('value', col.id)
-                optionEl.textContent = col.title
-            selectStatusEl.append(optionEl)
-            }
-        })
+    const [container,divCheckBoxEl] = createCardModal(card,data)
+    updateSubTasks(divCheckBoxEl)
+    document.body.append(container)
+    modalBackground(container)
 }
 
-const updateSubTasks = () => {
+const updateSubTasks = (divCheckBoxEl) => {
     let card = getCardInfo()
     let length = card.subtasks.length
     let completedLength = card.subtasks.filter(task => task.isCompleted).length
-    cardSubTasksLabel.textContent = `Subtasks (${completedLength} of ${length})`
     smallCardSubTasks = document.getElementById(card.id).children[1]
     smallCardSubTasks.textContent = `${completedLength} of ${length} subtasks`
     divCheckBoxEl.innerHTML = ''
-    divCheckBoxEl.append(cardSubTasksLabel)
     card.subtasks.map((task) =>{
             let inputDiv = document.createElement('div')
             inputDiv.className = 'flex items-center px-3 rounded-lg bg-[#21212d] my-2 hover:bg-[#635fc71a]'
@@ -586,10 +559,10 @@ const updateSubTasks = () => {
 }
 
 const updateTask = (task) => {
+    const divCheckBoxEl = document.getElementById("card-checkbox")
     task.isCompleted = !task.isCompleted
-    console.log(task.isCompleted)
     localStorage.setItem('app_data', JSON.stringify(appData))
-    updateSubTasks()
+    updateSubTasks(divCheckBoxEl)
 }
 
 const updateCardStatus = (e) => {
@@ -605,24 +578,24 @@ const updateCardStatus = (e) => {
     localStorage.setItem('app_data', JSON.stringify(appData))
     init()
 }
-selectStatusEl.addEventListener('change',(e)=>updateCardStatus(e))
-
 
 // show the edit card component
-const showEditCard = () => {
-    toggleBackground.removeAttribute('hidden')
+const showEditCardMenu = () => {
+    const editCardContainer = document.querySelector('#show-edit-card')
     editCardContainer.removeAttribute('hidden')
 }
-showEditCardBtn.addEventListener('click',showEditCard) 
 
 // show delete Card modal
 const showDeleteTask = () => {
-    cardContainer.setAttribute('hidden',true)
-    deleteCardContainer.removeAttribute('hidden')
+    const cardContainer = document.querySelector('#card-modal')
+    cardContainer.remove()
+    const container = createDeleteContainer("delete-card-container","Delete this Task","Are you sure you want to delete the 'Review early feedback and plan next steps for roadmap' task and its subtasks? This action cannot be reversed.","delete-card-btn",'card')
+    document.body.append(container)
+    modalBackground(container)
 }
 
 // delete card function
-const deleteTask = () => {
+const deleteTask = (deleteContainer) => {
     let data = appData
     console.log(data)
      // find the col index
@@ -635,59 +608,53 @@ const deleteTask = () => {
     // save and initialize
     localStorage.setItem('app_data', JSON.stringify(appData));
     init()
-    hideModal()
+    toggleBackground.setAttribute('hidden',true);
+    deleteContainer.remove();
     alert('sucsses')
 }
-deleteCardBtn.addEventListener('click',deleteTask)
+// deleteCardBtn.addEventListener('click',deleteTask)
 
 // show edit task
 const showEditTask = () => {
-    editTaskContainer.innerHTML = ''
-    editStatusSelect.innerHTML = ''
-    let data = appData
-    toggleBackground.removeAttribute('hidden')
-    showEditTaskContainer.removeAttribute('hidden')
-    const card = getCardInfo()
-    editTaskTitle.value = card.title
-    editTaskDescription.value = card.description
-    card.subtasks.map(task =>{
-        divEl = createInput(task.title, 'edit-subtask-old', task.id)
-        editTaskContainer.append(divEl)
-    })
-    cols = getCols()
-    const defaultOption = document.createElement('option')
-    defaultOption.value =  data.currentCol
-    const defaultOptionTitle = cols.findIndex(col => col.id === data.currentCol)
-    defaultOption.textContent = cols[defaultOptionTitle].title
-    defaultOption.selected = true;
-    editStatusSelect.append(defaultOption)
-        cols.map(col => {
-            if (col.id !== defaultOption.value) {
-            let optionEl = document.createElement('option')
-                optionEl.setAttribute('value', col.id)
-                optionEl.textContent = col.title
-            editStatusSelect.append(optionEl)
-            }
-    })
+    const cardContainer = document.querySelector('#card-modal')
+    cardContainer.remove()
+    // <-- create -->
+    const container = createBaseContainer('edit-task-container')
+    const innerContainer = createBaseInner('Edit Task')
+    const form = createForm('edit-task-form')
+    const formTitle = createFormTitle('Title','edit-title',false,true,'edit-task')
+    const formDescription = createDescriptionForm('edit-description',false)
+    const formFieldSet = createFieldSetFrom(false,'Subtasks','edit-subtask-container','add-new-edit-task-input','+ Add New SubTask','edit-task')
+    const formStatus = createStatusFrom('edit-status')
+    const formSubmitBtn = createSubmitBtnForm('Save')
+
+    form.append(formTitle)
+    form.append(formDescription)
+    form.append(formFieldSet)
+    form.append(formStatus)
+    form.append(formSubmitBtn)
+    form.addEventListener('submit', (e) => onEditTaskFormSubmit(e,form,container))
+
+    innerContainer.append(form)
+    container.append(innerContainer)
+    document.body.append(container)
+    modalBackground(container)
 }
-addNewTaskBtn.addEventListener('click', () =>showAddNewTask())
 
 // add input element and append it to inputs container
-const addEditTaskInput = (e) => {
+const addEditTaskInput = (e,editTaskContainer) => {
     e.preventDefault()
     let divEl = createInput('','edit-subtask')
     editTaskContainer.append(divEl)
 }
-addNewEditTaskInputBtn.addEventListener('click', (e) =>addEditTaskInput(e))
 
-
-// get the form data on submit
-editTaskForm.addEventListener('submit', (event) => {
+// // get the form data on submit
+const onEditTaskFormSubmit = (e,form,container) => {
     // Prevent the default action (refreshing the page)
-    event.preventDefault();
+    e.preventDefault();
     let data = appData 
     // Get the form data
-    const formData = new FormData(editTaskForm);
+    const formData = new FormData(form);
     let card = getCardInfo()
     card.title = formData.get('edit-title')
     card.description = formData.get('edit-description')
@@ -732,6 +699,352 @@ editTaskForm.addEventListener('submit', (event) => {
 
     localStorage.setItem('app_data', JSON.stringify(appData));
     init()
-});
+    toggleBackground.setAttribute('hidden',true);
+    container.remove();
+};
 
 /* <==============================================================================> */
+
+const createBaseContainer = (id) => {
+    const baseContainer = document.createElement('div');
+    baseContainer.id = id;
+    baseContainer.className = 'absolute top-0 bottom-0 left-0 right-0 m-auto w-11/12 sm:w-[500px] h-fit max-h-[80vh] md:max-h-[90vh] overflow-y-auto z-10';
+    return baseContainer
+}
+
+const createBaseInner = (heading) => {
+    const baseInner = document.createElement('div');
+    baseInner.className = 'p-7 bg-[#2c2c38] rounded-lg';
+    const baseHeading = document.createElement('h2');
+    baseHeading.className = 'text-lg font-semibold text-white';
+    baseHeading.textContent = heading;
+    baseInner.append(baseHeading);
+    return baseInner
+}
+
+const createFormTitle = (content,id,placeholder,required,type) => {
+    const titleDiv = document.createElement('div');
+    const titleLabel = document.createElement('label');
+    titleLabel.htmlFor = id;
+    titleLabel.className = 'block mb-1.5 text-sm font-medium text-white';
+    titleLabel.textContent = content;
+    const titleInput = document.createElement('input');
+    titleInput.type = 'text';
+    titleInput.id = id;
+    titleInput.name = id;
+    titleInput.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]';
+    if (type === 'column') {
+        const board = getBoard(appData.currentBoard);
+        titleInput.value = board.title;
+    } else if (type === 'edit-task'){   
+        const card = getCardInfo()
+        titleInput.value = card.title;
+    }
+    placeholder ? titleInput.placeholder = 'e.g. Take coffee break' : '';
+    required ? titleInput.required = true : '';
+    titleDiv.appendChild(titleLabel);
+    titleDiv.appendChild(titleInput);
+    return titleDiv
+}
+
+const createForm = (id) => {
+    const form = document.createElement('form');
+    form.id = id;
+    form.className = 'pt-5 space-y-5';
+    return form
+}
+
+const createDescriptionForm = (id,placeholder) => {
+    const descriptionDiv = document.createElement('div');
+    const descriptionLabel = document.createElement('label');
+    descriptionLabel.htmlFor = id;
+    descriptionLabel.className = 'block mb-1.5 text-sm font-medium text-white';
+    descriptionLabel.textContent = 'Description';
+    const descriptionInput = document.createElement('textarea');
+    descriptionInput.id = id;
+    descriptionInput.name = id;
+    descriptionInput.rows = 4;
+    descriptionInput.className = 'block p-2.5 w-full text-sm text-white font-medium bg-[#2c2c38] rounded-lg border-2 border-[#353541] placeholder-[#686872]';
+    if(placeholder) {
+        descriptionInput.placeholder = 'e.g. It\'s always good to take a break, This 15 minutes break will recharge the batteries a little.'
+    } else {
+        const card = getCardInfo()
+        descriptionInput.value = card.description
+    }
+    descriptionDiv.appendChild(descriptionLabel);
+    descriptionDiv.appendChild(descriptionInput);
+    return descriptionDiv
+}
+
+const createFieldSetFrom = (isPlaceHolder,legendText,id,btnId,btnContent,type) => {
+    const types = {
+        'task': addTaskInput,
+        'column': addColumnInput,
+        'board': addNewBoardColumnInput,
+        'edit-task': addEditTaskInput,
+    }
+    const fieldset = document.createElement('fieldset');
+
+    const legend = document.createElement('legend');
+    legend.className = 'block mb-1.5 text-sm font-medium text-white';
+    legend.textContent = legendText;
+
+    const inputDiv = document.createElement('div');
+    inputDiv.className = 'space-y-3';
+
+    const inputContainer = document.createElement('div');
+    inputContainer.id = id;
+    inputContainer.className = 'space-y-3 !mb-3';
+    let board = getBoard(appData.currentBoard)
+    if (type === 'column') {
+        board.cols.map(col => {
+            divEl = createInput(col.title, 'column', col.id)
+            inputContainer.append(divEl)
+        })
+    } else if (type === 'edit-task') {
+        const card = getCardInfo()
+        card.subtasks.map(task =>{
+                divEl = createInput(task.title, 'edit-subtask-old', task.id)
+                inputContainer.append(divEl)
+            })
+    }
+
+    const addNewInput = document.createElement('button');
+    addNewInput.id = btnId;
+    addNewInput.className = 'py-3 px-5 bg-white text-[#655ec8] rounded-full font-bold w-full';
+    addNewInput.textContent = btnContent;
+    addNewInput.addEventListener('click', (e) => types[type](e,inputContainer))
+
+    if (isPlaceHolder) {
+        [subtask1Div,subtask2Div] = placeholder(type)
+        inputDiv.appendChild(subtask1Div);
+        inputDiv.appendChild(subtask2Div);
+    }
+    inputDiv.appendChild(inputContainer);
+
+    fieldset.appendChild(legend);
+    fieldset.appendChild(inputDiv);
+    fieldset.appendChild(addNewInput);
+    return fieldset;
+}
+
+const placeholder = (type) => {
+    if (type === 'task') {
+        const subtask1Div = document.createElement('div');
+        subtask1Div.className = 'flex items-center gap-2.5';
+        const subtask1Input = document.createElement('input');
+        subtask1Input.type = 'text';
+        subtask1Input.name = 'subtask';
+        subtask1Input.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]';
+        subtask1Input.placeholder = 'e.g. Make coffee';
+        subtask1Div.appendChild(subtask1Input);
+        const subtask2Div = document.createElement('div');
+        subtask2Div.className = 'flex items-center gap-2.5';
+        const subtask2Input = document.createElement('input');
+        subtask2Input.type = 'text';
+        subtask2Input.name = 'subtask';
+        subtask2Input.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]';
+        subtask2Input.placeholder = 'e.g. Drink coffee & smile';
+        subtask2Div.appendChild(subtask2Input);
+        return [subtask1Div,subtask2Div]
+    } else {
+        const div1 = document.createElement('div');
+        div1.className = 'flex items-center gap-2.5';
+        const input1 = document.createElement('input');
+        input1.type = 'text';
+        input1.name = 'new-board-column';
+        input1.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg w-full p-2.5 placeholder-[#686872]';
+        input1.placeholder = 'e.g. Todo';
+        div1.appendChild(input1);
+        const div2 = document.createElement('div');
+        div2.className = 'flex items-center gap-2.5';
+        const input2 = document.createElement('input');
+        input2.type = 'text';
+        input2.name = 'new-board-column';
+        input2.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg w-full p-2.5 placeholder-[#686872]';
+        input2.placeholder = 'e.g. Doing';
+        div2.appendChild(input2);
+        return [div1,div2]
+    }
+}
+
+const createStatusFrom = (id) => {
+    const statusDiv = document.createElement('div');
+
+    const statusLabel = document.createElement('label');
+    statusLabel.htmlFor = id;
+    statusLabel.className = 'block mb-1.5 text-sm font-medium text-white';
+    statusLabel.textContent = 'Status';
+
+    const statusInput = document.createElement('select');
+    statusInput.id = id;
+    statusInput.name = id;
+    statusInput.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white text-sm rounded-lg block w-full p-2.5';
+    const cols = getCols()
+    const data = appData
+    if (id === 'edit-status') {
+        const defaultOption = document.createElement('option')
+        defaultOption.value =  data.currentCol
+        const defaultOptionTitle = cols.findIndex(col => col.id === data.currentCol)
+        defaultOption.textContent = cols[defaultOptionTitle].title
+        defaultOption.selected = true;
+        statusInput.append(defaultOption)
+            cols.map(col => {
+                if (col.id !== defaultOption.value) {
+                let optionEl = document.createElement('option')
+                    optionEl.setAttribute('value', col.id)
+                    optionEl.textContent = col.title
+                    statusInput.append(optionEl)
+                }
+        })
+    } else {
+        cols.map(col => {
+            let optionEl = document.createElement('option')
+                optionEl.setAttribute('value', col.id)
+                optionEl.textContent = col.title
+                statusInput.append(optionEl)
+        })
+    }
+    statusDiv.appendChild(statusLabel);
+    statusDiv.appendChild(statusInput);
+    return statusDiv
+}
+
+const createSubmitBtnForm = (content) => {
+    const createButton = document.createElement('button');
+    createButton.type = 'submit';
+    createButton.className = 'py-3 px-5 bg-[#655ec8] hover:bg-[#a8a4ff] text-white rounded-full font-bold w-full mt-3';
+    createButton.textContent = content;
+    return  createButton
+} 
+
+const createDeleteContainer = (id,title,content,btnId,type) => {
+    const deleteContainer = document.createElement('div');
+    deleteContainer.id = id;
+    deleteContainer.className = 'absolute top-0 bottom-0 left-0 right-0 m-auto w-11/12 sm:w-[500px] h-fit max-h-[80vh] md:max-h-[90vh] overflow-y-auto z-10';
+
+    const innerDiv = document.createElement('div');
+    innerDiv.className = 'p-7 bg-[#2c2c38] rounded-lg';
+
+    const h2 = document.createElement('h2');
+    h2.className = 'text-lg font-semibold text-red-400 pb-7';
+    h2.textContent = title;
+    innerDiv.appendChild(h2);
+
+    const p = document.createElement('p');
+    p.className = 'text-sm text-[#828fa3] font-medium pb-6';
+    p.textContent = content;
+    innerDiv.appendChild(p);
+
+    const deleteButton = document.createElement('button');
+    deleteButton.id = btnId;
+    deleteButton.className = 'py-3 px-5 bg-red-400 hover:bg-[#ff9898] text-white rounded-full font-semibold w-full mb-4';
+    deleteButton.textContent = 'Delete';
+    deleteButton.addEventListener('click',() => type === 'board' ? deleteBoard(deleteContainer) : deleteTask(deleteContainer))
+    innerDiv.appendChild(deleteButton);
+
+    const cancelButton = document.createElement('button');
+    cancelButton.className = 'py-3 px-5 text-[#655ec8] bg-white rounded-full font-semibold w-full';
+    cancelButton.textContent = 'Cancel';
+    console.log(cancelButton);
+    cancelButton.addEventListener('click',() => {deleteContainer.remove(), toggleBackground.setAttribute('hidden',true)});
+    innerDiv.appendChild(cancelButton);
+    deleteContainer.appendChild(innerDiv);
+    return deleteContainer;
+}
+
+const createCardModal = (card,data) => {
+    const cardModal = document.createElement('div');
+    cardModal.id = 'card-modal';
+    cardModal.className = 'absolute top-0 bottom-0 left-0 right-0 m-auto w-11/12 sm:w-[500px] h-fit max-h-[80vh] md:max-h-[90vh] overflow-y-auto z-10';
+    const innerDiv = document.createElement('div');
+    innerDiv.className = 'p-7 bg-[#2c2c38] rounded-lg';
+    const div1 = document.createElement('div');
+    div1.className = 'flex items-center justify-between pb-5 relative';
+    const h2 = document.createElement('h2');
+    h2.id = 'card-title';
+    h2.className = 'text-lg font-semibold text-white';
+    h2.textContent = card.title;
+    div1.appendChild(h2);
+
+    const span = document.createElement('span');
+    span.className = 'text-[#828fa3] cursor-pointer';
+    span.id = 'edit-card-btn';
+    span.addEventListener('click',showEditCardMenu) 
+
+    span.innerHTML = 
+    `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z">
+        </path>
+    </svg>`
+    div1.appendChild(span);
+
+    const showEditCard = document.createElement('div');
+    showEditCard.id = 'show-edit-card';
+    showEditCard.className = 'w-36 h-24 bg-[#21212d] absolute -bottom-[76px] -right-7 rounded-lg py-3 px-5 z-10';
+    showEditCard.hidden = true;
+    const ul = document.createElement('ul');
+    ul.className = ' w-full h-full flex flex-col justify-between';
+    const li1 = document.createElement('li');
+    li1.className = 'text-[#828fa3] font-bold cursor-pointer';
+    li1.textContent = 'Edit Task';
+    li1.addEventListener('click', showEditTask);
+    const li2 = document.createElement('li');
+    li2.className = 'text-red-400 font-bold cursor-pointer';
+    li2.textContent = 'Delete Task';
+    li2.addEventListener('click', showDeleteTask);
+    ul.appendChild(li1);
+    ul.appendChild(li2);
+    showEditCard.appendChild(ul);
+    div1.appendChild(showEditCard);
+    innerDiv.appendChild(div1);
+
+    const p = document.createElement('p');
+    p.id = 'card-description';
+    p.className = 'text-[#828fa3] text-[13px] font-medium leading-relaxed pb-5';
+    p.textContent = card.description;
+    innerDiv.appendChild(p);
+
+    const div2 = document.createElement('div');
+    div2.id = 'card-checkbox';
+    const label1 = document.createElement('label');
+    label1.id = 'card-tasks-label';
+    label1.className = 'block mb-1.5 text-sm font-medium text-white';
+    let length = card.subtasks.length
+    let completedLength = card.subtasks.filter(task => task.isCompleted).length
+    label1.textContent = `Subtasks (${completedLength} of ${length})`
+    div2.appendChild(label1);
+    innerDiv.appendChild(div2);
+
+    const div3 = document.createElement('div');
+    const label2 = document.createElement('label');
+    label2.className = 'block mb-1.5 text-sm font-medium text-white pt-5';
+    label2.textContent = 'Status';
+    div3.appendChild(label2);
+
+    const select = document.createElement('select');
+    select.id = 'card-status-select';
+    select.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white text-sm rounded-lg block w-full p-2.5';
+    select.name = 'card-status';
+    let cols = getCols()
+    const defaultOption = document.createElement('option')
+    defaultOption.value =  data.currentCol
+    const defaultOptionTitle = cols.findIndex(col => col.id === data.currentCol)
+    defaultOption.textContent = cols[defaultOptionTitle].title
+    defaultOption.selected = true;
+    select.append(defaultOption)
+        cols.map(col => {
+            if (col.id !== defaultOption.value) {
+            let optionEl = document.createElement('option')
+                optionEl.setAttribute('value', col.id)
+                optionEl.textContent = col.title
+                select.append(optionEl)
+            }
+        })
+    select.addEventListener('change',(e)=>updateCardStatus(e))
+    div3.appendChild(select);
+    innerDiv.appendChild(div3);
+    cardModal.appendChild(innerDiv);
+    console.log(div2)
+    return [cardModal,div2]
+}
