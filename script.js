@@ -35,6 +35,9 @@ const mobileBoardMenu = document.querySelector('#mobile-board-menu')
 
 const toggleBackground = document.querySelector('#toggle-background')
 
+// theme toggle button
+const toggleThemeBtn = document.querySelector('#theme-btn')
+
 let appData = {
     boards: [],
     currentBoard: 0,
@@ -88,7 +91,7 @@ function init() {
             currentCol: 0,
             currentCard: 0,
             identifier: 0,
-            settings: null
+            theme: 'dark'
         }
         appData = defaultBoard
         localStorage.setItem('app_data', JSON.stringify(appData))
@@ -125,6 +128,11 @@ const updatePositionOnDrop = (drake,cols) => {
 
 // fill the current board with the appropriate elements created from the data
 const fillData = (data) => {
+    // theme
+    const html = document.querySelector('html')
+    html.className = data.theme
+    toggleThemeBtn.value = data.theme
+    data.theme === 'dark' ? toggleThemeBtn.setAttribute('checked',true) : ''
     boardContainer.innerHTML = ''
     BoardSideBar.innerHTML = ''
     // create sidebar menu(boards list)
@@ -155,9 +163,9 @@ const fillData = (data) => {
         columnTitle.classList.add('uppercase', 'flex', 'items-center')
         // create title content *Fix dot color later and number in ()* 
         let columnTitleDot = document.createElement('span')
-        columnTitleDot.classList.add('h-3.5', 'w-3.5', 'block', `${column.color}`, 'rounded-full', 'mr-3')
+        columnTitleDot.classList.add('h-4', 'w-4', 'block', `${column.color}`, 'rounded-full', 'mr-3')
         let columnTitleSpan = document.createElement('span')
-        columnTitleSpan.classList.add('block','text-[#828fa3]','font-medium','tracking-widest')
+        columnTitleSpan.classList.add('block','text-[#828fa3]','font-semibold','tracking-normal','text-sm')
         columnTitleSpan.textContent = column.title + ' ' + `(${column.cards.length})`
         // create card container
         let cardContainer = document.createElement('div')
@@ -170,10 +178,10 @@ const fillData = (data) => {
         // create the card container
         column.cards.map(card => {
             let cardArticle = document.createElement('article')
-            cardArticle.classList.add('w-full', 'px-4', 'py-4', 'bg-[#2c2c38]','rounded-lg','shadow-card','card','group','cursor-pointer')
+            cardArticle.classList.add('w-full','px-4','py-4','bg-white','dark:bg-[#2c2c38]','rounded-lg','shadow-card','card','group','cursor-pointer')
             cardArticle.setAttribute('id',card.id)
             let cardTitle = document.createElement('h3')
-            cardTitle.className = 'text-white font-semibold pb-[2px] pointer-events-none group-hover:text-[#655ec8]'
+            cardTitle.className = 'dark:text-white font-semibold pb-[2px] pointer-events-none group-hover:text-[#655ec8]'
             cardTitle.textContent = card.title
             let cardSubTasks = document.createElement('p')
             cardSubTasks.className = 'text-[#828fa3] font-semibold text-[13px] pointer-events-none'
@@ -242,6 +250,17 @@ const getRandomVibrantColor = () => {
     // Return the random pastel color
     return vibrantColors[randomIndex];
 }
+
+
+toggleThemeBtn.addEventListener('click', () => {
+    const html = document.querySelector('html');
+    const currentMode = toggleThemeBtn.getAttribute('value');
+    const newMode = currentMode === 'dark' ? 'light' : 'dark';
+    html.className = newMode;
+    toggleThemeBtn.setAttribute('value', newMode);
+    appData.theme = newMode
+    localStorage.setItem('app_data', JSON.stringify(appData));
+});
 
 /* <=================================== Modals ===================================> */
 // show add new task modal
@@ -437,7 +456,7 @@ const createInput = (title,name,id) => {
         // if id is passed add it to the div
         id ? divEl.setAttribute('id', id ) : ''
     let inputEl = document.createElement('input')
-        inputEl.classList.add('bg-[#2c2c38]','border-2','border-[#353541]','text-white','font-semibold','text-sm','rounded-lg','w-full','p-2.5','placeholder-[#686872]')
+        inputEl.classList.add('dark:bg-[#2c2c38]','border','dark:border-[#353541]','dark:text-white','font-semibold','text-sm','rounded-lg','w-full','p-2.5','dark:placeholder-[#686872]')
         inputEl.setAttribute('type', 'text')
         inputEl.setAttribute('name', name )
         name === 'column' ? inputEl.setAttribute('required', true) : ''
@@ -533,15 +552,20 @@ const showCard = (e) => {
 }
 
 const updateSubTasks = (divCheckBoxEl) => {
+    divCheckBoxEl.innerHTML = ''
     let card = getCardInfo()
     let length = card.subtasks.length
     let completedLength = card.subtasks.filter(task => task.isCompleted).length
     smallCardSubTasks = document.getElementById(card.id).children[1]
     smallCardSubTasks.textContent = `${completedLength} of ${length} subtasks`
-    divCheckBoxEl.innerHTML = ''
+    const label1 = document.createElement('label');
+    label1.id = 'card-tasks-label';
+    label1.className = 'block mb-1.5 text-sm font-medium text-[#828fa3] dark:text-white';
+    label1.textContent = `Subtasks (${completedLength} of ${length})`
+    divCheckBoxEl.appendChild(label1);
     card.subtasks.map((task) =>{
             let inputDiv = document.createElement('div')
-            inputDiv.className = 'flex items-center px-3 rounded-lg bg-[#21212d] my-2 hover:bg-[#635fc71a]'
+            inputDiv.className = 'flex items-center px-3 rounded-lg bg-[#f4f7fd] dark:bg-[#21212d] my-2 hover:bg-[#635fc71a]'
             let inputEl = document.createElement('input')
             inputEl.className = 'w-[18px] h-[18px] accent-[#635fc7] text-blue-500 rounded-sm cursor-pointer'
             inputEl.setAttribute('type', 'checkbox')
@@ -550,7 +574,7 @@ const updateSubTasks = (divCheckBoxEl) => {
             task.isCompleted ? inputEl.setAttribute('checked',true) : '' 
             inputEl.addEventListener('change',()=> updateTask(task))
             let labelEl = document.createElement('label')
-            labelEl.className = `py-4 ml-3 w-full text-[13px] font-bold text-white cursor-pointer ${task.isCompleted ? 'line-through opacity-50' : ''}`
+            labelEl.className = `py-4 ml-3 w-full text-[13px] font-bold dark:text-white cursor-pointer ${task.isCompleted ? 'line-through opacity-50' : ''}`
             labelEl.setAttribute('for', task.id)
             labelEl.textContent = task.title
             inputDiv.append(inputEl,labelEl)
@@ -714,9 +738,9 @@ const createBaseContainer = (id) => {
 
 const createBaseInner = (heading) => {
     const baseInner = document.createElement('div');
-    baseInner.className = 'p-7 bg-[#2c2c38] rounded-lg';
+    baseInner.className = 'p-7 bg-white dark:bg-[#2c2c38] rounded-lg';
     const baseHeading = document.createElement('h2');
-    baseHeading.className = 'text-lg font-semibold text-white';
+    baseHeading.className = 'text-lg font-semibold dark:text-white';
     baseHeading.textContent = heading;
     baseInner.append(baseHeading);
     return baseInner
@@ -726,13 +750,13 @@ const createFormTitle = (content,id,placeholder,required,type) => {
     const titleDiv = document.createElement('div');
     const titleLabel = document.createElement('label');
     titleLabel.htmlFor = id;
-    titleLabel.className = 'block mb-1.5 text-sm font-medium text-white';
+    titleLabel.className = 'block mb-1.5 text-sm font-medium text-[#828fa3] dark:text-white';
     titleLabel.textContent = content;
     const titleInput = document.createElement('input');
     titleInput.type = 'text';
     titleInput.id = id;
     titleInput.name = id;
-    titleInput.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]';
+    titleInput.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white font-medium text-sm rounded-lg  w-full p-2.5 dark:placeholder-[#686872]';
     if (type === 'column') {
         const board = getBoard(appData.currentBoard);
         titleInput.value = board.title;
@@ -758,13 +782,13 @@ const createDescriptionForm = (id,placeholder) => {
     const descriptionDiv = document.createElement('div');
     const descriptionLabel = document.createElement('label');
     descriptionLabel.htmlFor = id;
-    descriptionLabel.className = 'block mb-1.5 text-sm font-medium text-white';
+    descriptionLabel.className = 'block mb-1.5 text-sm font-medium text-[#828fa3] dark:text-white';
     descriptionLabel.textContent = 'Description';
     const descriptionInput = document.createElement('textarea');
     descriptionInput.id = id;
     descriptionInput.name = id;
     descriptionInput.rows = 4;
-    descriptionInput.className = 'block p-2.5 w-full text-sm text-white font-medium bg-[#2c2c38] rounded-lg border-2 border-[#353541] placeholder-[#686872]';
+    descriptionInput.className = 'block p-2.5 w-full text-sm dark:text-white font-medium dark:bg-[#2c2c38] rounded-lg border dark:border-[#353541] dark:placeholder-[#686872]';
     if(placeholder) {
         descriptionInput.placeholder = 'e.g. It\'s always good to take a break, This 15 minutes break will recharge the batteries a little.'
     } else {
@@ -786,7 +810,7 @@ const createFieldSetFrom = (isPlaceHolder,legendText,id,btnId,btnContent,type) =
     const fieldset = document.createElement('fieldset');
 
     const legend = document.createElement('legend');
-    legend.className = 'block mb-1.5 text-sm font-medium text-white';
+    legend.className = 'block mb-1.5 text-sm font-medium text-[#828fa3] dark:text-white';
     legend.textContent = legendText;
 
     const inputDiv = document.createElement('div');
@@ -811,7 +835,7 @@ const createFieldSetFrom = (isPlaceHolder,legendText,id,btnId,btnContent,type) =
 
     const addNewInput = document.createElement('button');
     addNewInput.id = btnId;
-    addNewInput.className = 'py-3 px-5 bg-white text-[#655ec8] rounded-full font-bold w-full';
+    addNewInput.className = 'py-3 px-5 bg-[#635fc71a] dark:bg-white text-[#655ec8] rounded-full font-bold w-full';
     addNewInput.textContent = btnContent;
     addNewInput.addEventListener('click', (e) => types[type](e,inputContainer))
 
@@ -835,7 +859,7 @@ const placeholder = (type) => {
         const subtask1Input = document.createElement('input');
         subtask1Input.type = 'text';
         subtask1Input.name = 'subtask';
-        subtask1Input.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]';
+        subtask1Input.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white font-medium text-sm rounded-lg  w-full p-2.5 dark:placeholder-[#686872]';
         subtask1Input.placeholder = 'e.g. Make coffee';
         subtask1Div.appendChild(subtask1Input);
         const subtask2Div = document.createElement('div');
@@ -843,7 +867,7 @@ const placeholder = (type) => {
         const subtask2Input = document.createElement('input');
         subtask2Input.type = 'text';
         subtask2Input.name = 'subtask';
-        subtask2Input.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg  w-full p-2.5 placeholder-[#686872]';
+        subtask2Input.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white font-medium text-sm rounded-lg  w-full p-2.5 dark:placeholder-[#686872]';
         subtask2Input.placeholder = 'e.g. Drink coffee & smile';
         subtask2Div.appendChild(subtask2Input);
         return [subtask1Div,subtask2Div]
@@ -853,7 +877,7 @@ const placeholder = (type) => {
         const input1 = document.createElement('input');
         input1.type = 'text';
         input1.name = 'new-board-column';
-        input1.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg w-full p-2.5 placeholder-[#686872]';
+        input1.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white font-medium text-sm rounded-lg w-full p-2.5 dark:placeholder-[#686872]';
         input1.placeholder = 'e.g. Todo';
         div1.appendChild(input1);
         const div2 = document.createElement('div');
@@ -861,7 +885,7 @@ const placeholder = (type) => {
         const input2 = document.createElement('input');
         input2.type = 'text';
         input2.name = 'new-board-column';
-        input2.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white font-medium text-sm rounded-lg w-full p-2.5 placeholder-[#686872]';
+        input2.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white font-medium text-sm rounded-lg w-full p-2.5 dark:placeholder-[#686872]';
         input2.placeholder = 'e.g. Doing';
         div2.appendChild(input2);
         return [div1,div2]
@@ -873,13 +897,13 @@ const createStatusFrom = (id) => {
 
     const statusLabel = document.createElement('label');
     statusLabel.htmlFor = id;
-    statusLabel.className = 'block mb-1.5 text-sm font-medium text-white';
+    statusLabel.className = 'block mb-1.5 text-sm font-medium text-[#828fa3] dark:text-white';
     statusLabel.textContent = 'Status';
 
     const statusInput = document.createElement('select');
     statusInput.id = id;
     statusInput.name = id;
-    statusInput.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white text-sm rounded-lg block w-full p-2.5';
+    statusInput.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white text-sm rounded-lg block w-full p-2.5';
     const cols = getCols()
     const data = appData
     if (id === 'edit-status') {
@@ -924,7 +948,7 @@ const createDeleteContainer = (id,title,content,btnId,type) => {
     deleteContainer.className = 'absolute top-0 bottom-0 left-0 right-0 m-auto w-11/12 sm:w-[500px] h-fit max-h-[80vh] md:max-h-[90vh] overflow-y-auto z-10';
 
     const innerDiv = document.createElement('div');
-    innerDiv.className = 'p-7 bg-[#2c2c38] rounded-lg';
+    innerDiv.className = 'p-7 bg-white dark:bg-[#2c2c38] rounded-lg';
 
     const h2 = document.createElement('h2');
     h2.className = 'text-lg font-semibold text-red-400 pb-7';
@@ -944,7 +968,7 @@ const createDeleteContainer = (id,title,content,btnId,type) => {
     innerDiv.appendChild(deleteButton);
 
     const cancelButton = document.createElement('button');
-    cancelButton.className = 'py-3 px-5 text-[#655ec8] bg-white rounded-full font-semibold w-full';
+    cancelButton.className = 'py-3 px-5 text-[#655ec8] bg-[#635fc71a] dark:bg-white rounded-full font-semibold w-full';
     cancelButton.textContent = 'Cancel';
     console.log(cancelButton);
     cancelButton.addEventListener('click',() => {deleteContainer.remove(), toggleBackground.setAttribute('hidden',true)});
@@ -958,12 +982,12 @@ const createCardModal = (card,data) => {
     cardModal.id = 'card-modal';
     cardModal.className = 'absolute top-0 bottom-0 left-0 right-0 m-auto w-11/12 sm:w-[500px] h-fit max-h-[80vh] md:max-h-[90vh] overflow-y-auto z-10';
     const innerDiv = document.createElement('div');
-    innerDiv.className = 'p-7 bg-[#2c2c38] rounded-lg';
+    innerDiv.className = 'p-7 bg-white dark:bg-[#2c2c38] rounded-lg';
     const div1 = document.createElement('div');
     div1.className = 'flex items-center justify-between pb-5 relative';
     const h2 = document.createElement('h2');
     h2.id = 'card-title';
-    h2.className = 'text-lg font-semibold text-white';
+    h2.className = 'text-lg font-semibold dark:text-white';
     h2.textContent = card.title;
     div1.appendChild(h2);
 
@@ -981,16 +1005,16 @@ const createCardModal = (card,data) => {
 
     const showEditCard = document.createElement('div');
     showEditCard.id = 'show-edit-card';
-    showEditCard.className = 'w-36 h-24 bg-[#21212d] absolute -bottom-[76px] -right-7 rounded-lg py-3 px-5 z-10';
+    showEditCard.className = 'w-36 h-24 bg-white dark:bg-[#21212d] absolute -bottom-[76px] -right-7 rounded-lg py-3 px-5 z-10';
     showEditCard.hidden = true;
     const ul = document.createElement('ul');
     ul.className = ' w-full h-full flex flex-col justify-between';
     const li1 = document.createElement('li');
-    li1.className = 'text-[#828fa3] font-bold cursor-pointer';
+    li1.className = 'text-[#828fa3] text-sm font-bold cursor-pointer';
     li1.textContent = 'Edit Task';
     li1.addEventListener('click', showEditTask);
     const li2 = document.createElement('li');
-    li2.className = 'text-red-400 font-bold cursor-pointer';
+    li2.className = 'text-red-400 text-sm font-bold cursor-pointer';
     li2.textContent = 'Delete Task';
     li2.addEventListener('click', showDeleteTask);
     ul.appendChild(li1);
@@ -1007,24 +1031,17 @@ const createCardModal = (card,data) => {
 
     const div2 = document.createElement('div');
     div2.id = 'card-checkbox';
-    const label1 = document.createElement('label');
-    label1.id = 'card-tasks-label';
-    label1.className = 'block mb-1.5 text-sm font-medium text-white';
-    let length = card.subtasks.length
-    let completedLength = card.subtasks.filter(task => task.isCompleted).length
-    label1.textContent = `Subtasks (${completedLength} of ${length})`
-    div2.appendChild(label1);
     innerDiv.appendChild(div2);
 
     const div3 = document.createElement('div');
     const label2 = document.createElement('label');
-    label2.className = 'block mb-1.5 text-sm font-medium text-white pt-5';
+    label2.className = 'block mb-1.5 text-sm font-medium text-[#828fa3] dark:text-white pt-5';
     label2.textContent = 'Status';
     div3.appendChild(label2);
 
     const select = document.createElement('select');
     select.id = 'card-status-select';
-    select.className = 'bg-[#2c2c38] border-2 border-[#353541] text-white text-sm rounded-lg block w-full p-2.5';
+    select.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white text-sm rounded-lg block w-full p-2.5';
     select.name = 'card-status';
     let cols = getCols()
     const defaultOption = document.createElement('option')
@@ -1045,7 +1062,6 @@ const createCardModal = (card,data) => {
     div3.appendChild(select);
     innerDiv.appendChild(div3);
     cardModal.appendChild(innerDiv);
-    console.log(div2)
     return [cardModal,div2]
 }
 
@@ -1055,7 +1071,7 @@ const data = appData
     MobileBoardContainer.id = 'board-container-mobile';
     MobileBoardContainer.className = 'absolute top-0 bottom-0 left-0 right-0 m-auto w-64 h-fit max-h-[80vh] md:max-h-[90vh] overflow-y-auto z-10';
     const innerDiv = document.createElement('div');
-    innerDiv.className = 'p-5 pl-0 bg-[#2c2c38] rounded-lg';
+    innerDiv.className = 'p-5 pl-0 bg-white dark:bg-[#2c2c38] rounded-lg';
     const p = document.createElement('p');
     p.className = 'uppercase font-bold text-xs text-[#828fa3] tracking-wide pl-5 all-boards-title mb-3';
     p.textContent = `All Boards (${data.boards.length})`
@@ -1084,7 +1100,28 @@ const data = appData
     addBoardBtn.id = 'add-board-btn-mobile';
     addBoardBtn.className = 'text-base font-semibold pl-5 py-3 rounded-r-full hover:bg-[#635fc71a] text-[#635fc7] cursor-pointer gap-4 flex items-center fill-[#635fc7] mt-3';
     addBoardBtn.innerHTML = '<div><svg width="16" height="16" xmlns="http://www.w3.org/2000/svg"><path d="M0 2.889A2.889 2.889 0 0 1 2.889 0H13.11A2.889 2.889 0 0 1 16 2.889V13.11A2.888 2.888 0 0 1 13.111 16H2.89A2.889 2.889 0 0 1 0 13.111V2.89Zm1.333 5.555v4.667c0 .859.697 1.556 1.556 1.556h6.889V8.444H1.333Zm8.445-1.333V1.333h-6.89A1.556 1.556 0 0 0 1.334 2.89V7.11h8.445Zm4.889-1.333H11.11v4.444h3.556V5.778Zm0 5.778H11.11v3.11h2a1.556 1.556 0 0 0 1.556-1.555v-1.555Zm0-7.112V2.89a1.555 1.555 0 0 0-1.556-1.556h-2v3.111h3.556Z"></path></svg></div><span>+ Create New Board</span>';
+    const themeDiv = document.createElement('div');
+    themeDiv.className ='mt-3'
+    const themeInnerDiv = document.createElement('div');
+    themeInnerDiv.classList.add('p-2.5','ml-5','bg-[#f4f7fd]', 'dark:bg-[#21212d]', 'rounded-md');
+    themeInnerDiv.innerHTML = `<div class="flex justify-center gap-5">
+                                <!-- svg -->
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#828fa3" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+                                </svg>
+                                <!-- toggle -->
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox"  class="sr-only peer" id="theme-btn">
+                                    <div class="w-9 h-5 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-[#635fc7]"></div>
+                                </label>
+                                <!-- svg -->
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#828fa3" class="w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                                </svg>
+                            </div>`
+    themeDiv.appendChild(themeInnerDiv);
     innerDiv.append(addBoardBtn);
+    innerDiv.append(themeDiv);
     MobileBoardContainer.append(innerDiv);
     document.body.append(MobileBoardContainer);
     modalBackground(MobileBoardContainer)
