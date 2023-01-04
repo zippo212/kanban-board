@@ -1704,6 +1704,10 @@ video {
   color: rgb(104 104 114 / var(--tw-placeholder-opacity));
 }
 
+.dark .dark\:hover\:bg-\[\#635fc71a\]:hover {
+  background-color: #635fc71a;
+}
+
 .dark .peer:focus ~ .dark\:peer-focus\:ring-blue-800 {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(30 64 175 / var(--tw-ring-opacity));

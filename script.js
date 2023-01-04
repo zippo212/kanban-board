@@ -129,10 +129,9 @@ const updatePositionOnDrop = (drake,cols) => {
 // fill the current board with the appropriate elements created from the data
 const fillData = (data) => {
     // theme
-    const html = document.querySelector('html')
-    html.className = data.theme
     toggleThemeBtn.value = data.theme
     data.theme === 'dark' ? toggleThemeBtn.setAttribute('checked',true) : ''
+    // 
     boardContainer.innerHTML = ''
     BoardSideBar.innerHTML = ''
     // create sidebar menu(boards list)
@@ -565,7 +564,7 @@ const updateSubTasks = (divCheckBoxEl) => {
     divCheckBoxEl.appendChild(label1);
     card.subtasks.map((task) =>{
             let inputDiv = document.createElement('div')
-            inputDiv.className = 'flex items-center px-3 rounded-lg bg-[#f4f7fd] dark:bg-[#21212d] my-2 hover:bg-[#635fc71a]'
+            inputDiv.className = 'flex items-center px-3 rounded-lg bg-[#f4f7fd] dark:bg-[#21212d] my-2 hover:bg-[#635fc71a] dark:hover:bg-[#635fc71a]'
             let inputEl = document.createElement('input')
             inputEl.className = 'w-[18px] h-[18px] accent-[#635fc7] text-blue-500 rounded-sm cursor-pointer'
             inputEl.setAttribute('type', 'checkbox')
@@ -707,8 +706,6 @@ const onEditTaskFormSubmit = (e,form,container) => {
             )
         }
     })
-
-    // fix the edit subtasks
 
     if(formData.get('edit-status') !== data.currentCol){
         console.log('splice')
