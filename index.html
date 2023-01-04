@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-        const data = JSON.parse(localStorage.getItem('app_data'))
-        document.documentElement.className = data.theme
+        const themeData = JSON.parse(localStorage.getItem('app_data'))
+        document.documentElement.className = themeData.theme
     </script>
     <link href="/dist/output.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.6.6/dragula.css" integrity="sha512-gGkweS4I+MDqo1tLZtHl3Nu3PGY7TU8ldedRnu60fY6etWjQ/twRHRG2J92oDj7GDU2XvX8k6G5mbp0yCoyXCA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -14,7 +14,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,700,0,0" />
 </head>
-<body class="flex relative" style="font-family: 'Montserrat', sans-serif">
+<body class="flex relative opacity-0 transition-opacity duration-500 ease-in" style="font-family: 'Montserrat', sans-serif">
 
     <div class="dark:bg-[#2c2c38] h-screen w-72 p-5 pl-0 pt-0 border-r-[1.5px] border-[#e4ebfa] dark:border-[#353541] fixed flex-none -translate-x-full md:translate-x-0 transition-transform duration-300">
         <div class="h-[94px] flex items-center pl-5 absolute w-full top-0 dark:bg-[#2c2c38]">
@@ -67,7 +67,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
                         </svg>
                     </span>
-                    <div class="w-36 h-24 bg-[#21212d] absolute -bottom-24 -right-5 rounded-l-lg py-3 px-5 z-10 show-edit-board" hidden>
+                    <div class="w-36 h-24 bg-white dark:bg-[#21212d] absolute -bottom-24 -right-5 rounded-l-lg py-3 px-5 z-10 show-edit-board" hidden>
                         <ul class=" w-full h-full flex flex-col justify-between text-sm">
                             <li class="text-[#828fa3] font-bold cursor-pointer" onclick="showEditBoard()">Edit Board</li>
                             <li class="text-red-400 font-bold cursor-pointer" onclick="showDeleteBoard()">Delete Board</li>

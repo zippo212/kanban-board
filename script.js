@@ -53,7 +53,7 @@ let columns = []
 /* <============================================================================================> */
 
 function init() {
-    let data = localStorage.getItem('app_data');
+    const data = localStorage.getItem('app_data');
     if (data) {
         appData = JSON.parse(data)
         fillData(appData)
@@ -194,6 +194,7 @@ const fillData = (data) => {
     for (let i = 0; i < cards.length; i++) {
         cards[i].addEventListener('click',(e)=>showCard(e))
     }
+    document.addEventListener("DOMContentLoaded",document.querySelector('body').classList.add('opacity-100'))
 }
 
 /* <=================================== Utility Functions ===================================> */
@@ -455,7 +456,7 @@ const createInput = (title,name,id) => {
         // if id is passed add it to the div
         id ? divEl.setAttribute('id', id ) : ''
     let inputEl = document.createElement('input')
-        inputEl.classList.add('dark:bg-[#2c2c38]','border','dark:border-[#353541]','dark:text-white','font-semibold','text-sm','rounded-lg','w-full','p-2.5','dark:placeholder-[#686872]')
+        inputEl.classList.add('dark:bg-[#2c2c38]','border','dark:border-[#353541]','dark:text-white','font-semibold','text-sm','rounded-lg','w-full','p-2.5','dark:placeholder-[#686872]','focus:outline-none', 'focus:border-[#635fc7]', 'focus:ring-1','focus:ring-[#635fc7]')
         inputEl.setAttribute('type', 'text')
         inputEl.setAttribute('name', name )
         name === 'column' ? inputEl.setAttribute('required', true) : ''
@@ -507,8 +508,9 @@ const showEditBoard = () => {
 
 // show delete board modal
 const showDeleteBoard = () => {
+    const board = getBoard(appData.currentBoard)
     editBoardContainer.forEach(el => el.setAttribute('hidden',true));
-    const container = createDeleteContainer("delete-board-container","Delete this board","Are you Sure you want to delete the 'Name' board? This action will remove all columns and tasks and cannot be reversed.","delete-board-btn",'board');
+    const container = createDeleteContainer("delete-board-container","Delete this board",`Are you Sure you want to delete the '${board.title}' board? This action will remove all columns and tasks and cannot be reversed.`,"delete-board-btn",'board');
     document.body.append(container);
     modalBackground(container);
 };
@@ -564,7 +566,7 @@ const updateSubTasks = (divCheckBoxEl) => {
     divCheckBoxEl.appendChild(label1);
     card.subtasks.map((task) =>{
             let inputDiv = document.createElement('div')
-            inputDiv.className = 'flex items-center px-3 rounded-lg bg-[#f4f7fd] dark:bg-[#21212d] my-2 hover:bg-[#635fc71a] dark:hover:bg-[#635fc71a]'
+            inputDiv.className = 'flex items-center px-3 rounded-lg bg-[#f4f7fd] dark:bg-[#21212d] my-2 hover:bg-[#635fc71a] dark:hover:bg-[#635fc71a] focus:outline-none focus:border-[#635fc7] focus:ring-1 focus:ring-[#635fc7]'
             let inputEl = document.createElement('input')
             inputEl.className = 'w-[18px] h-[18px] accent-[#635fc7] text-blue-500 rounded-sm cursor-pointer'
             inputEl.setAttribute('type', 'checkbox')
@@ -610,9 +612,10 @@ const showEditCardMenu = () => {
 
 // show delete Card modal
 const showDeleteTask = () => {
+    const card = getCardInfo()
     const cardContainer = document.querySelector('#card-modal')
     cardContainer.remove()
-    const container = createDeleteContainer("delete-card-container","Delete this Task","Are you sure you want to delete the 'Review early feedback and plan next steps for roadmap' task and its subtasks? This action cannot be reversed.","delete-card-btn",'card')
+    const container = createDeleteContainer("delete-card-container","Delete this Task",`Are you sure you want to delete the '${card.title}' task and its subtasks? This action cannot be reversed.`,"delete-card-btn",'card')
     document.body.append(container)
     modalBackground(container)
 }
@@ -753,7 +756,7 @@ const createFormTitle = (content,id,placeholder,required,type) => {
     titleInput.type = 'text';
     titleInput.id = id;
     titleInput.name = id;
-    titleInput.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white font-medium text-sm rounded-lg  w-full p-2.5 dark:placeholder-[#686872]';
+    titleInput.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white font-medium text-sm rounded-lg  w-full p-2.5 dark:placeholder-[#686872] focus:outline-none focus:border-[#635fc7] focus:ring-1 focus:ring-[#635fc7]';
     if (type === 'column') {
         const board = getBoard(appData.currentBoard);
         titleInput.value = board.title;
@@ -785,7 +788,7 @@ const createDescriptionForm = (id,placeholder) => {
     descriptionInput.id = id;
     descriptionInput.name = id;
     descriptionInput.rows = 4;
-    descriptionInput.className = 'block p-2.5 w-full text-sm dark:text-white font-medium dark:bg-[#2c2c38] rounded-lg border dark:border-[#353541] dark:placeholder-[#686872]';
+    descriptionInput.className = 'block p-2.5 w-full text-sm dark:text-white font-medium dark:bg-[#2c2c38] rounded-lg border dark:border-[#353541] dark:placeholder-[#686872] focus:outline-none focus:border-[#635fc7] focus:ring-1 focus:ring-[#635fc7]';
     if(placeholder) {
         descriptionInput.placeholder = 'e.g. It\'s always good to take a break, This 15 minutes break will recharge the batteries a little.'
     } else {
@@ -856,7 +859,7 @@ const placeholder = (type) => {
         const subtask1Input = document.createElement('input');
         subtask1Input.type = 'text';
         subtask1Input.name = 'subtask';
-        subtask1Input.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white font-medium text-sm rounded-lg  w-full p-2.5 dark:placeholder-[#686872]';
+        subtask1Input.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white font-medium text-sm rounded-lg  w-full p-2.5 dark:placeholder-[#686872] focus:outline-none focus:border-[#635fc7] focus:ring-1 focus:ring-[#635fc7]';
         subtask1Input.placeholder = 'e.g. Make coffee';
         subtask1Div.appendChild(subtask1Input);
         const subtask2Div = document.createElement('div');
@@ -864,7 +867,7 @@ const placeholder = (type) => {
         const subtask2Input = document.createElement('input');
         subtask2Input.type = 'text';
         subtask2Input.name = 'subtask';
-        subtask2Input.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white font-medium text-sm rounded-lg  w-full p-2.5 dark:placeholder-[#686872]';
+        subtask2Input.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white font-medium text-sm rounded-lg  w-full p-2.5 dark:placeholder-[#686872] focus:outline-none focus:border-[#635fc7] focus:ring-1 focus:ring-[#635fc7]';
         subtask2Input.placeholder = 'e.g. Drink coffee & smile';
         subtask2Div.appendChild(subtask2Input);
         return [subtask1Div,subtask2Div]
@@ -874,7 +877,7 @@ const placeholder = (type) => {
         const input1 = document.createElement('input');
         input1.type = 'text';
         input1.name = 'new-board-column';
-        input1.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white font-medium text-sm rounded-lg w-full p-2.5 dark:placeholder-[#686872]';
+        input1.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white font-medium text-sm rounded-lg w-full p-2.5 dark:placeholder-[#686872] focus:outline-none focus:border-[#635fc7] focus:ring-1 focus:ring-[#635fc7]';
         input1.placeholder = 'e.g. Todo';
         div1.appendChild(input1);
         const div2 = document.createElement('div');
@@ -882,7 +885,7 @@ const placeholder = (type) => {
         const input2 = document.createElement('input');
         input2.type = 'text';
         input2.name = 'new-board-column';
-        input2.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white font-medium text-sm rounded-lg w-full p-2.5 dark:placeholder-[#686872]';
+        input2.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white font-medium text-sm rounded-lg w-full p-2.5 dark:placeholder-[#686872] focus:outline-none focus:border-[#635fc7] focus:ring-1 focus:ring-[#635fc7]';
         input2.placeholder = 'e.g. Doing';
         div2.appendChild(input2);
         return [div1,div2]
@@ -900,7 +903,7 @@ const createStatusFrom = (id) => {
     const statusInput = document.createElement('select');
     statusInput.id = id;
     statusInput.name = id;
-    statusInput.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white text-sm rounded-lg block w-full p-2.5';
+    statusInput.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white text-sm rounded-lg block w-full p-2.5 focus:outline-none focus:border-[#635fc7] focus:ring-1 focus:ring-[#635fc7]';
     const cols = getCols()
     const data = appData
     if (id === 'edit-status') {
@@ -1038,7 +1041,7 @@ const createCardModal = (card,data) => {
 
     const select = document.createElement('select');
     select.id = 'card-status-select';
-    select.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white text-sm rounded-lg block w-full p-2.5';
+    select.className = 'dark:bg-[#2c2c38] border dark:border-[#353541] dark:text-white text-sm rounded-lg block w-full p-2.5 focus:outline-none focus:border-[#635fc7] focus:ring-1 focus:ring-[#635fc7]';
     select.name = 'card-status';
     let cols = getCols()
     const defaultOption = document.createElement('option')
@@ -1108,7 +1111,7 @@ const data = appData
                                 </svg>
                                 <!-- toggle -->
                                 <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox"  class="sr-only peer" id="theme-btn">
+                                    <input type="checkbox"  class="sr-only peer" id='mobile-theme-toggle'>
                                     <div class="w-9 h-5 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-[#635fc7]"></div>
                                 </label>
                                 <!-- svg -->
@@ -1121,6 +1124,27 @@ const data = appData
     innerDiv.append(themeDiv);
     MobileBoardContainer.append(innerDiv);
     document.body.append(MobileBoardContainer);
+
+    const input = document.getElementById('mobile-theme-toggle')
+    input.value = data.theme
+    data.theme === 'dark' ? input.setAttribute('checked',true) : ''
+    input.addEventListener('click', () => {
+        const html = document.querySelector('html');
+        const currentMode = input.getAttribute('value');
+        const newMode = currentMode === 'dark' ? 'light' : 'dark';
+        html.className = newMode;
+        input.setAttribute('value', newMode);
+        toggleThemeBtn.value = newMode
+        data.theme = newMode
+        console.log(currentMode,newMode,toggleThemeBtn.value)
+        if (newMode === 'dark') {
+            toggleThemeBtn.setAttribute('checked',true)
+        } else {
+            toggleThemeBtn.removeAttribute('checked')
+        }
+        localStorage.setItem('app_data', JSON.stringify(data));
+    });
+
     modalBackground(MobileBoardContainer)
 }
 mobileBoardMenu.addEventListener('click',createMobileBoardMenu)
