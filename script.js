@@ -36,7 +36,7 @@ const mobileBoardMenu = document.querySelector('#mobile-board-menu')
 const toggleBackground = document.querySelector('#toggle-background')
 
 // theme toggle button
-const toggleThemeBtn = document.querySelector('#theme-btn')
+const toggleThemeBtn = document.querySelector('#toggle-theme')
 
 let appData = {
     boards: [],
@@ -128,10 +128,7 @@ const updatePositionOnDrop = (drake,cols) => {
 
 // fill the current board with the appropriate elements created from the data
 const fillData = (data) => {
-    // theme
-    toggleThemeBtn.value = data.theme
-    data.theme === 'dark' ? toggleThemeBtn.setAttribute('checked',true) : ''
-    // 
+    toggleThemeBtn.checked = data.theme === 'dark' ? true : false;
     boardContainer.innerHTML = ''
     BoardSideBar.innerHTML = ''
     // create sidebar menu(boards list)
@@ -168,7 +165,7 @@ const fillData = (data) => {
         columnTitleSpan.textContent = column.title + ' ' + `(${column.cards.length})`
         // create card container
         let cardContainer = document.createElement('div')
-        cardContainer.classList.add('w-72', 'pt-5', 'space-y-4', 'min-h-[108px]')
+        cardContainer.classList.add('w-72', 'pt-5', 'space-y-4', 'min-h-[108px]','pb-7')
         cardContainer.setAttribute('id', column.id)
         // append the column elements to the board container
         columnTitle.append(columnTitleDot, columnTitleSpan)
@@ -250,17 +247,6 @@ const getRandomVibrantColor = () => {
     // Return the random pastel color
     return vibrantColors[randomIndex];
 }
-
-
-toggleThemeBtn.addEventListener('click', () => {
-    const html = document.querySelector('html');
-    const currentMode = toggleThemeBtn.getAttribute('value');
-    const newMode = currentMode === 'dark' ? 'light' : 'dark';
-    html.className = newMode;
-    toggleThemeBtn.setAttribute('value', newMode);
-    appData.theme = newMode
-    localStorage.setItem('app_data', JSON.stringify(appData));
-});
 
 /* <=================================== Modals ===================================> */
 // show add new task modal
@@ -732,7 +718,7 @@ const onEditTaskFormSubmit = (e,form,container) => {
 const createBaseContainer = (id) => {
     const baseContainer = document.createElement('div');
     baseContainer.id = id;
-    baseContainer.className = 'absolute top-0 bottom-0 left-0 right-0 m-auto w-11/12 sm:w-[500px] h-fit max-h-[80vh] md:max-h-[90vh] overflow-y-auto z-10';
+    baseContainer.className = 'absolute top-0 bottom-0 left-0 right-0 m-auto w-11/12 sm:w-[500px] h-fit max-h-[80vh] md:max-h-[90vh] overflow-y-auto z-10 sm:scrollbar-thin scrollbar-thumb-[#655ec8] scrollbar-track-white dark:scrollbar-track-[#2c2c38] scrollbar-corner-white dark:scrollbar-corner-[#2c2c38]';
     return baseContainer
 }
 
@@ -980,7 +966,7 @@ const createDeleteContainer = (id,title,content,btnId,type) => {
 const createCardModal = (card,data) => {
     const cardModal = document.createElement('div');
     cardModal.id = 'card-modal';
-    cardModal.className = 'absolute top-0 bottom-0 left-0 right-0 m-auto w-11/12 sm:w-[500px] h-fit max-h-[80vh] md:max-h-[90vh] overflow-y-auto z-10';
+    cardModal.className = 'absolute top-0 bottom-0 left-0 right-0 m-auto w-11/12 sm:w-[500px] h-fit max-h-[80vh] md:max-h-[90vh] overflow-y-auto z-10 sm:scrollbar-thin scrollbar-thumb-[#655ec8] scrollbar-track-white dark:scrollbar-track-[#2c2c38] scrollbar-corner-white dark:scrollbar-corner-[#2c2c38]';
     const innerDiv = document.createElement('div');
     innerDiv.className = 'p-7 bg-white dark:bg-[#2c2c38] rounded-lg';
     const div1 = document.createElement('div');
@@ -1069,7 +1055,7 @@ const createMobileBoardMenu = () => {
 const data = appData
     const MobileBoardContainer = document.createElement('div');
     MobileBoardContainer.id = 'board-container-mobile';
-    MobileBoardContainer.className = 'absolute top-0 bottom-0 left-0 right-0 m-auto w-64 h-fit max-h-[80vh] md:max-h-[90vh] overflow-y-auto z-10';
+    MobileBoardContainer.className = 'absolute top-0 bottom-0 left-0 right-0 m-auto w-64 h-fit max-h-[80vh] md:max-h-[90vh] overflow-y-auto z-10 sm:scrollbar-thin scrollbar-thumb-[#655ec8] scrollbar-track-white dark:scrollbar-track-[#2c2c38] scrollbar-corner-white dark:scrollbar-corner-[#2c2c38]';
     const innerDiv = document.createElement('div');
     innerDiv.className = 'p-5 pl-0 bg-white dark:bg-[#2c2c38] rounded-lg';
     const p = document.createElement('p');
@@ -1111,7 +1097,7 @@ const data = appData
                                 </svg>
                                 <!-- toggle -->
                                 <label class="relative inline-flex items-center cursor-pointer">
-                                    <input type="checkbox"  class="sr-only peer" id='mobile-theme-toggle'>
+                                    <input type="checkbox"  class="sr-only peer toggle-element" id="toggle-theme-mobile">
                                     <div class="w-9 h-5 bg-gray-200 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-[#635fc7]"></div>
                                 </label>
                                 <!-- svg -->
@@ -1124,27 +1110,31 @@ const data = appData
     innerDiv.append(themeDiv);
     MobileBoardContainer.append(innerDiv);
     document.body.append(MobileBoardContainer);
-
-    const input = document.getElementById('mobile-theme-toggle')
-    input.value = data.theme
-    data.theme === 'dark' ? input.setAttribute('checked',true) : ''
-    input.addEventListener('click', () => {
-        const html = document.querySelector('html');
-        const currentMode = input.getAttribute('value');
-        const newMode = currentMode === 'dark' ? 'light' : 'dark';
-        html.className = newMode;
-        input.setAttribute('value', newMode);
-        toggleThemeBtn.value = newMode
-        data.theme = newMode
-        console.log(currentMode,newMode,toggleThemeBtn.value)
-        if (newMode === 'dark') {
-            toggleThemeBtn.setAttribute('checked',true)
-        } else {
-            toggleThemeBtn.removeAttribute('checked')
-        }
-        localStorage.setItem('app_data', JSON.stringify(data));
-    });
-
+    // set up toggle position
+    toggleThemeMobile = document.getElementById('toggle-theme-mobile')
+    toggleThemeMobile.checked = data.theme === 'dark' ? true : false;
     modalBackground(MobileBoardContainer)
 }
 mobileBoardMenu.addEventListener('click',createMobileBoardMenu)
+
+// theme change events
+document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('toggle-element')) {
+        const html = document.querySelector('html')
+        html.classList.toggle('dark')
+        console.log(appData.theme)
+        appData.theme = html.className
+        console.log(appData.theme)
+        localStorage.setItem('app_data', JSON.stringify(appData))
+    }
+});
+document.addEventListener('change', () => {
+    console.log(document.querySelector('html'))
+    if (document.querySelector('html').className === 'dark') {
+        console.log(toggleThemeBtn.checked)
+        toggleThemeBtn.checked = true
+        console.log(toggleThemeBtn.checked)
+    } else {
+        toggleThemeBtn.checked = false
+    }
+});
