@@ -42,13 +42,26 @@ let appData = {
 let columns = []
 
 /* <============================================================================================> */
+// disable drag functionality on mobile devices
+let isJsEnabled = true;
+function checkWindowSize() {
+  if (window.innerWidth < 480) {
+    isJsEnabled = false;
+  } else {
+    isJsEnabled = true;
+  }
+}
+window.addEventListener('resize', checkWindowSize);
+checkWindowSize(); 
 
 function init() {
     const data = localStorage.getItem('app_data');
     if (data) {
         appData = JSON.parse(data)
         fillData(appData)
-        setUpDragula()
+        if (isJsEnabled) {
+            setUpDragula()
+        }
     } else {
         let defaultBoard ={
             boards: [
@@ -136,7 +149,9 @@ function init() {
         appData = defaultBoard
         localStorage.setItem('app_data', JSON.stringify(appData))
         fillData(appData)
-        setUpDragula()
+        if (isJsEnabled) {
+            setUpDragula()
+        }
     }
 }
 document.body.onload = () => init()
@@ -1185,30 +1200,33 @@ document.addEventListener('change', () => {
 });
 
 // horizontal scroll on drag
-const slider = document.querySelector('#board-container');
-let isDown = false;
-let startX;
-let scrollLeft;
+if (isJsEnabled) {
+    const slider = document.querySelector('#board-container');
+    let isDown = false;
+    let startX;
+    let scrollLeft;
 
-slider.addEventListener('mousedown', (e) => {
-if (e.target.id.includes('card')) return
-  isDown = true;
-  slider.classList.add('active');
-  startX = e.pageX - slider.offsetLeft;
-  scrollLeft = slider.scrollLeft;
-});
-slider.addEventListener('mouseleave', () => {
-  isDown = false;
-  slider.classList.remove('active');
-});
-slider.addEventListener('mouseup', () => {
-  isDown = false;
-  slider.classList.remove('active');
-});
-slider.addEventListener('mousemove', (e) => {
-  if(!isDown) return;
-  e.preventDefault();
-  const x = e.pageX - slider.offsetLeft;
-  const walk = (x - startX) * 2;
-  slider.scrollLeft = scrollLeft - walk;
-});
+    slider.addEventListener('mousedown', (e) => {
+    if (e.target.id.includes('card')) return
+    isDown = true;
+    slider.classList.add('active');
+    startX = e.pageX - slider.offsetLeft;
+    scrollLeft = slider.scrollLeft;
+    });
+    slider.addEventListener('mouseleave', () => {
+    isDown = false;
+    slider.classList.remove('active');
+    });
+    slider.addEventListener('mouseup', () => {
+    isDown = false;
+    slider.classList.remove('active');
+    });
+    slider.addEventListener('mousemove', (e) => {
+    if(!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - slider.offsetLeft;
+    const walk = (x - startX) * 2;
+    slider.scrollLeft = scrollLeft - walk;
+    });
+}
+
