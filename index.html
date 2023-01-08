@@ -12,6 +12,11 @@
             document.documentElement.className = themeData.theme
         }
     </script>
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+    </style>
     <link href="/dist/output.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.6.6/dragula.css" integrity="sha512-gGkweS4I+MDqo1tLZtHl3Nu3PGY7TU8ldedRnu60fY6etWjQ/twRHRG2J92oDj7GDU2XvX8k6G5mbp0yCoyXCA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
@@ -22,8 +27,8 @@
 
     <div class="dark:bg-[#2c2c38] h-screen w-72 p-5 pl-0 pt-0 border-r border-[#e4ebfa] dark:border-[#3e3f4e] fixed flex-none -translate-x-full md:translate-x-0 transition-transform duration-300">
         <div class="h-[89px] flex items-center pl-5 absolute w-full top-0 dark:bg-[#2c2c38]">
-            <img src="./logo.svg" alt="logo" class="hidden dark:block">
-            <img src="./logo-dark.svg" alt="logo" class="dark:hidden">
+            <img src="./img/logo.svg" alt="logo" class="hidden dark:block">
+            <img src="./img/logo-dark.svg" alt="logo" class="dark:hidden">
         </div>
         <div class="space-y-4 w-full absolute top-[114px] bottom-[114px] pr-5 overflow-y-auto sm:scrollbar-thin scrollbar-thumb-[#655ec8] scrollbar-track-white dark:scrollbar-track-[#2c2c38] scrollbar-corner-white dark:scrollbar-corner-[#2c2c38]">
             <p class="uppercase font-bold text-xs text-[#828fa3] tracking-[0.15em] pl-5" id="all-boards-title"></p>
@@ -81,7 +86,7 @@
             </div>
             <div class="flex justify-between items-center md:hidden">
                 <div class="flex items-center gap-4">
-                    <img src="./logo-mobile.svg" alt="logo">
+                    <img src="./img/logo-mobile.svg" alt="logo">
                     <div class="flex items-center gap-2 cursor-pointer max-w-[200px] sm:max-w-none" id="mobile-board-menu">
                         <h1 class="text-sm font-semibold dark:text-white header-board-name"></h1>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="4" stroke="#655ec8" class="w-3 h-3">
