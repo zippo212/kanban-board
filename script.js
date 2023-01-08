@@ -665,7 +665,7 @@ const deleteTask = (deleteContainer) => {
     init()
     toggleBackground.setAttribute('hidden',true);
     deleteContainer.remove();
-    alert('sucsses')
+    showAlert('success')
 }
 // deleteCardBtn.addEventListener('click',deleteTask)
 
@@ -1192,4 +1192,34 @@ document.addEventListener('change', () => {
     } else {
         toggleThemeBtn.checked = false
     }
+});
+
+
+// horizontal scroll on drag
+const slider = document.querySelector('#board-container');
+let isDown = false;
+let startX;
+let scrollLeft;
+
+slider.addEventListener('mousedown', (e) => {
+if (e.target.id.includes('card')) return
+  isDown = true;
+  slider.classList.add('active');
+  startX = e.pageX - slider.offsetLeft;
+  scrollLeft = slider.scrollLeft;
+});
+slider.addEventListener('mouseleave', () => {
+  isDown = false;
+  slider.classList.remove('active');
+});
+slider.addEventListener('mouseup', () => {
+  isDown = false;
+  slider.classList.remove('active');
+});
+slider.addEventListener('mousemove', (e) => {
+  if(!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - slider.offsetLeft;
+  const walk = (x - startX) * 2;
+  slider.scrollLeft = scrollLeft - walk;
 });
