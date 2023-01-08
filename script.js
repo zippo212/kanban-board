@@ -3,12 +3,9 @@
 // Overall containers
 const boardContainer = document.querySelector('#board')
 const BoardSideBar = document.querySelector('#board-sidebar')
-const BoardSideBarMobile = document.querySelector('#board-sidebar-mobile')
 
 // new task modal
 const addNewTaskBtn = document.querySelectorAll('.new-task-btn')
-
-// edit task modal
 
 // new column modal
 const addNewColumnBtnBig = document.querySelector('#column-btn-big')
@@ -16,15 +13,9 @@ const addNewColumnBtnBig = document.querySelector('#column-btn-big')
 // new board modal
 const addNewBoardBtn = document.querySelector('#add-board-btn')
 
-// card modal
-
 // edit board header component
 const showEditBoardBtn = document.querySelectorAll('.edit-board-btn')
 const editBoardContainer = document.querySelectorAll('.show-edit-board')
-
-// edit card header component
-const deleteCardContainer = document.querySelector('#delete-card-container')
-const deleteCardBtn = document.querySelector('#delete-card-btn')
 
 // sidebar and header
 const sidebarTitle = document.querySelector('#all-boards-title')
@@ -653,7 +644,7 @@ const showDeleteTask = () => {
 // delete card function
 const deleteTask = (deleteContainer) => {
     let data = appData
-     // find the col index
+    // find the col index
     const cols = getCols()
     const colIndex = cols.findIndex(elem => elem.id === data.currentCol);
     // find the card index
@@ -667,7 +658,6 @@ const deleteTask = (deleteContainer) => {
     deleteContainer.remove();
     showAlert('success')
 }
-// deleteCardBtn.addEventListener('click',deleteTask)
 
 // show edit task
 const showEditTask = () => {
@@ -767,7 +757,7 @@ const showAlert = (type) => {
         const alert = document.createElement('div');
         // Set the class and content of the element
         alert.className = 'p-4 text-sm text-red-700 bg-red-100 rounded-lg w-[300px] absolute left-0 right-0 top-5 mx-auto';
-        alert.innerHTML = '<span class="font-bold">Error!</span> You must have at least one board.';
+        alert.innerHTML = '<span class="font-bold block">Error!</span> You must have at least one board.';
         // Add the element to the page
         document.body.append(alert);
         setTimeout(function() {
@@ -1193,7 +1183,6 @@ document.addEventListener('change', () => {
         toggleThemeBtn.checked = false
     }
 });
-
 
 // horizontal scroll on drag
 const slider = document.querySelector('#board-container');
