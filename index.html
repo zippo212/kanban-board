@@ -6,7 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
         const themeData = JSON.parse(localStorage.getItem('app_data'))
-        document.documentElement.className = themeData.theme
+        if (!themeData) {
+            document.documentElement.className = 'dark'
+        } else {
+            document.documentElement.className = themeData.theme
+        }
     </script>
     <link href="/dist/output.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.6.6/dragula.css" integrity="sha512-gGkweS4I+MDqo1tLZtHl3Nu3PGY7TU8ldedRnu60fY6etWjQ/twRHRG2J92oDj7GDU2XvX8k6G5mbp0yCoyXCA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -16,8 +20,8 @@
 </head>
 <body class="flex relative opacity-0 transition-opacity duration-500 ease-in" style="font-family: 'Montserrat', sans-serif ">
 
-    <div class="dark:bg-[#2c2c38] h-screen w-72 p-5 pl-0 pt-0 border-r-[1.5px] border-[#e4ebfa] dark:border-[#353541] fixed flex-none -translate-x-full md:translate-x-0 transition-transform duration-300">
-        <div class="h-[94px] flex items-center pl-5 absolute w-full top-0 dark:bg-[#2c2c38]">
+    <div class="dark:bg-[#2c2c38] h-screen w-72 p-5 pl-0 pt-0 border-r-2 border-[#e4ebfa] dark:border-[#353541] fixed flex-none -translate-x-full md:translate-x-0 transition-transform duration-300">
+        <div class="h-[89.5px] flex items-center pl-5 absolute w-full top-0 dark:bg-[#2c2c38]">
             <img src="./logo.svg" alt="logo" class="hidden dark:block">
             <img src="./logo-dark.svg" alt="logo" class="dark:hidden">
         </div>
@@ -33,7 +37,7 @@
                 <span>+ Create New Board</span>
             </div>
         </div>
-        <div class="h-[94px] absolute w-full bottom-0">
+        <div class="h-[89.5px] absolute w-full bottom-0">
             <div class="p-4 mx-2.5 bg-[#f4f7fd] dark:bg-[#21212d] rounded-md">
                 <div class="flex justify-center gap-5">
                     <!-- svg -->
@@ -56,7 +60,7 @@
     
     <main class="w-full h-screen flex flex-col pl-0 md:pl-72 transition-all duration-300">
 
-        <header class="dark:bg-[#2c2c38] px-5 py-4 md:p-5 border-b-[1.5px] border-[#e4ebfa] dark:border-[#353541] border-l-0">
+        <header class="dark:bg-[#2c2c38] px-5 py-4 md:p-5 border-b-2 border-[#e4ebfa] dark:border-[#353541] border-l-0">
             <div class="hidden md:flex justify-between items-center">
                 <h1 class="text-2xl font-semibold dark:text-white header-board-name"></h1>
                 <div class="flex items-center relative">

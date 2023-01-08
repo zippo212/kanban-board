@@ -59,39 +59,88 @@ function init() {
         fillData(appData)
         setUpDragula()
     } else {
-        let defaultBoard = {
+        let defaultBoard ={
             boards: [
-                    {
-                    title: 'Your First Board',
-                    id: 'default-board-1',
-                    cols: [
-                        {
-                        title: 'Column',
-                        id: 'default-column-1',
-                        color: 'bg-[#FFA500]',
-                        cards: [
-                            {
-                            title: 'First Card',
-                            description: 'this is the first card',
-                            id: 'default-card-1',
-                            subtasks: [
-                                    {
-                                    title: 'do something',
-                                    isCompleted: false,
-                                    id: 'default-task-1',
-                                }
-                            ]
-                        }
-                        ]       
+                      {
+                        title: 'Welcome',
+                        id: 'default-board-1',
+                        cols: [
+                                {
+                                  title: 'Hello',
+                                  id: 'default-column-1',
+                                  color: 'bg-[#FFA500]',
+                                  cards: [
+                                      {
+                                        title: "Hey! My name is card, im here to help you organize and follow the tasks you need to do",
+                                        description: 'Here you would elaborate about whatever needs to be done',
+                                        id: 'default-card-1',
+                                        subtasks: [
+                                                    {
+                                                      title: 'For exemple "Do Something"',
+                                                      isCompleted: false,
+                                                      id: 'default-task-1',
+                                                    },
+                                                    {                                   
+                                                      title: "Or if it's already done you can just check it out 'Done'",
+                                                      isCompleted: true,
+                                                      id: 'default-task-2',
+                                                    },
+                                                  ]
+                                      }
+                                          ]       
+                                  },
+                              ]
                         },
-                    ]
-                },
-            ],
-            currentBoard: 'default-board-1',
-            currentCol: 0,
-            currentCard: 0,
-            identifier: 0,
-            theme: 'dark'
+                        {
+                        title: 'You can also make more boards of course!',
+                        id: 'default-board-2',
+                        cols: [
+                                {
+                                  title: 'Column number 1',
+                                  id: 'default-column-2',
+                                  color: 'bg-[#FFA500]',
+                                  cards: [
+                                      {
+                                        title: 'You can also drag cards into position try dragging me to Column number 2',
+                                        description: 'try to drag me :)',
+                                        id: 'default-card-2',
+                                        subtasks: [
+                                                    {
+                                                      title: 'Did you drag me ?',
+                                                      isCompleted: false,
+                                                      id: 'default-task-3',
+                                                    }
+                                                  ]
+                                      }
+                                          ]       
+                                  },
+                                  {
+                                  title: 'Column number 2',
+                                  id: 'default-column-3',
+                                  color: 'bg-[#ff9999]',
+                                  cards: [
+                                      {
+                                        title: 'Try to drag the card above or under me',
+                                        description: "Isn't it cool ? :)",
+                                        id: 'default-card-3',
+                                        subtasks: [
+                                                    {
+                                                      title: 'Good job!',
+                                                      isCompleted: true,
+                                                      id: 'default-task-4',
+                                                    }
+                                                  ]
+                                      }
+                                          ]       
+                                  },
+                              ]
+                          },
+                      ],
+                      currentBoard: 'default-board-1',
+                      currentCol: 0,
+                      currentCard: 0,
+                      identifier: 0,
+                      theme: 'dark',
         }
         appData = defaultBoard
         localStorage.setItem('app_data', JSON.stringify(appData))
@@ -113,7 +162,6 @@ const updatePositionOnDrop = (drake,cols) => {
         const sourceCol = cols.filter(col => col.id === source.id)[0]
         const cardIndex = sourceCol.cards.findIndex(card => card.id === el.id)
         const removedCard = sourceCol.cards.splice(cardIndex, 1)[0]
-        console.log(removedCard)
         const targetCol = cols.filter(col => col.id === target.id)[0]
         if (sibling) {
             const insertBeforeCard = targetCol.cards.findIndex(card => card.id === sibling.id)
@@ -227,9 +275,7 @@ const generateId = (type) => {
 const getCardInfo = () => {
     let data = appData
     let cols = getCols()
-    console.log(cols)
     const colIndex = cols.findIndex(col => col.id === data.currentCol);
-    console.log(colIndex)
     const cardIndex = cols[colIndex].cards.findIndex(card => card.id === data.currentCard);
     let card = cols[colIndex].cards[cardIndex]
     return card
@@ -283,7 +329,6 @@ const addTaskInput = (e,taskContainer) => {
 
 // get the form data on submit
 const onTaskFormSubmit = (e,form,container) => {
-    console.log('test')
     // Prevent the default action (refreshing the page)
     e.preventDefault();
     let cols = getCols()
@@ -459,7 +504,6 @@ const createInput = (title,name,id) => {
 const removeTaskInput = (e) => {
     let id = e.path[1].id
     let inputEl = e.path[1]
-    console.log(id)
         // remove the input from the DOM
         inputEl.remove()
     // if id is passed push it to the empty array columns
@@ -517,12 +561,12 @@ const deleteBoard = (deleteContainer) => {
         init()
         toggleBackground.setAttribute('hidden',true);
         deleteContainer.remove();
-        alert('sucsses')
+        showAlert('success')
     } else {
         // display error message
         toggleBackground.setAttribute('hidden',true);
         deleteContainer.remove();
-        alert('error')
+        showAlert('error')
     }
 }
 
@@ -609,7 +653,6 @@ const showDeleteTask = () => {
 // delete card function
 const deleteTask = (deleteContainer) => {
     let data = appData
-    console.log(data)
      // find the col index
     const cols = getCols()
     const colIndex = cols.findIndex(elem => elem.id === data.currentCol);
@@ -679,11 +722,9 @@ const onEditTaskFormSubmit = (e,form,container) => {
         card.subtasks.splice(taskIndex, 1)
     })
     formData.getAll('edit-subtask-old').map((task,i) =>{
-        console.log(card.subtasks)
         card.subtasks[i].title = task
     })
 
-    console.log(formData.getAll('edit-subtask'))
     formData.getAll('edit-subtask').map((task) =>{
         if(task !== '') {
             card.subtasks.push(
@@ -697,12 +738,10 @@ const onEditTaskFormSubmit = (e,form,container) => {
     })
 
     if(formData.get('edit-status') !== data.currentCol){
-        console.log('splice')
         let cols = getCols()
         const colIndex = cols.findIndex(col => col.id === data.currentCol)
         const cardIndex = cols[colIndex].cards.findIndex(card => card.id === data.currentCard)
         const removedCard = cols[colIndex].cards.splice(cardIndex, 1)[0];
-        console.log(removedCard)
         const newColIndex = cols.findIndex(col => col.id === formData.get('edit-status'))
         cols[newColIndex].cards.push(removedCard)
     }
@@ -714,6 +753,28 @@ const onEditTaskFormSubmit = (e,form,container) => {
 };
 
 /* <==============================================================================> */
+
+const showAlert = (type) => {
+    if (type === 'success') {
+        const alert = document.createElement('div');
+        alert.className = 'p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg w-[200px] absolute left-0 right-0 top-5 mx-auto'
+        alert.innerHTML = '<span class="font-bold">Deleted successfully!</span>'
+        document.body.append(alert);
+        setTimeout(function() {
+            document.body.removeChild(alert);
+          }, 2000);
+    } else {
+        const alert = document.createElement('div');
+        // Set the class and content of the element
+        alert.className = 'p-4 text-sm text-red-700 bg-red-100 rounded-lg w-[300px] absolute left-0 right-0 top-5 mx-auto';
+        alert.innerHTML = '<span class="font-bold">Error!</span> You must have at least one board.';
+        // Add the element to the page
+        document.body.append(alert);
+        setTimeout(function() {
+            document.body.removeChild(alert);
+          }, 2000);
+    }
+}
 
 const createBaseContainer = (id) => {
     const baseContainer = document.createElement('div');
@@ -956,7 +1017,6 @@ const createDeleteContainer = (id,title,content,btnId,type) => {
     const cancelButton = document.createElement('button');
     cancelButton.className = 'py-3 px-5 text-[#655ec8] bg-[#635fc71a] dark:bg-white rounded-full font-semibold w-full';
     cancelButton.textContent = 'Cancel';
-    console.log(cancelButton);
     cancelButton.addEventListener('click',() => {deleteContainer.remove(), toggleBackground.setAttribute('hidden',true)});
     innerDiv.appendChild(cancelButton);
     deleteContainer.appendChild(innerDiv);
@@ -1122,18 +1182,13 @@ document.addEventListener('click', (e) => {
     if (e.target.classList.contains('toggle-element')) {
         const html = document.querySelector('html')
         html.classList.toggle('dark')
-        console.log(appData.theme)
         appData.theme = html.className
-        console.log(appData.theme)
         localStorage.setItem('app_data', JSON.stringify(appData))
     }
 });
 document.addEventListener('change', () => {
-    console.log(document.querySelector('html'))
     if (document.querySelector('html').className === 'dark') {
-        console.log(toggleThemeBtn.checked)
         toggleThemeBtn.checked = true
-        console.log(toggleThemeBtn.checked)
     } else {
         toggleThemeBtn.checked = false
     }
