@@ -508,8 +508,8 @@ const createInput = (title,name,id) => {
 
 // remove input element
 const removeTaskInput = (e) => {
-    let id = e.path[1].id
-    let inputEl = e.path[1]
+    let id = e.composedPath()[1].id
+    let inputEl = e.composedPath()[1]
         // remove the input from the DOM
         inputEl.remove()
     // if id is passed push it to the empty array columns
@@ -580,7 +580,7 @@ const deleteBoard = (deleteContainer) => {
 const showCard = (e) => {
     let data = appData
     data.currentCard = e.target.id
-    data.currentCol = e.path[1].id
+    data.currentCol = e.composedPath()[1].id
     let card = getCardInfo()
     const [container,divCheckBoxEl] = createCardModal(card,data)
     updateSubTasks(divCheckBoxEl)
